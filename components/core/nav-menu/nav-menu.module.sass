@@ -1,0 +1,53 @@
+$spacing-outside: 10px
+$sliding-animation-time: .6s
+
+@keyframes color-shift
+  0%
+    color: rgb(120, 120, 120)
+  50%
+    color: rgb(80, 80, 80)
+  100%
+    color: rgb(120, 120, 120)
+
+@mixin wrapper()
+  display: flex
+  flex-direction: column
+  row-gap: 20px
+  position: relative
+  height: 100%
+  background-color: rgba(var(--nav-menu-rgb), 1)
+  box-shadow: rgba(100, 100, 100, .05) 0px 0px 20px 0px
+  width: 270px
+  align-self: center
+  padding: 10px
+  transition: $sliding-animation-time all
+
+@mixin wrapper--closed()
+  width: 100px
+
+@mixin section()
+  display: flex
+  justify-content: space-between
+  align-items: center
+  transition: .2s all
+  padding: 10px 15px
+  border-radius: 8px
+  border: 1px solid transparent
+
+@mixin section--highlightable()
+  cursor: pointer
+  &:hover
+    background-color: rgba(var(--card-hover-rgba))
+    border: 1px solid rgba(var(--card-hover-border-rgba))
+  &:active,
+  &:focus
+    background-color: rgba(var(--card-active-rgba))
+
+.wrapper
+  @include wrapper()
+  &:is(.closed)
+    @include wrapper--closed()
+  & > section
+    @include section()
+    &:is(:global(.highlightable))
+      @include section--highlightable()

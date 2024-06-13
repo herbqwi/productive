@@ -1,0 +1,51 @@
+@mixin wrapper()
+  width: 100%
+  display: flex
+  justify-content: space-between
+  align-items: center
+  margin-bottom: 10px
+
+@mixin dateText()
+  font-size: 14px
+  color: rgb(var(--secondary-text-rgb))
+  margin-left: 8px
+
+@mixin dateYearText()
+  background-color: rgba(var(--primary-1-rgb), .3)
+  border-radius: 4px
+  padding: 3px 5px
+  margin-left: 2px
+  aspect-ratio: 1
+
+@mixin controls()
+  display: flex
+  justify-content: space-between
+  align-items: center
+  gap: 10px
+  margin-right: 2px
+
+@mixin arrowBtn()
+  color: rgb(var(--arrow-btn-rgb))
+  transition: .2s all
+  padding: 4px
+  border-radius: 4px
+  aspect-ratio: 1
+  cursor: pointer
+  &:hover
+    color: white
+    background-color: rgba(var(--card-hover-rgba))
+  &:active
+    background-color: rgba(var(--card-active-rgba))
+    scale: .95
+
+.wrapper
+  @include wrapper()
+  & > p
+    @include dateText()
+    & > span
+      &:is(.year)
+        @include dateYearText()
+  & > .controls
+    @include controls()
+    & > svg
+      @include arrowBtn()

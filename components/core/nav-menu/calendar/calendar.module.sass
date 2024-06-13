@@ -1,0 +1,40 @@
+@mixin calendar()
+  width: 100%
+  padding-inline: 10px
+
+@mixin daysWrapper()
+  width: 100%
+  display: grid
+  row-gap: 15px
+  grid-template-columns: repeat(7, 1fr)
+  font-size: 12px
+
+@mixin dayCell()
+  justify-self: center
+  color: white
+
+@mixin todayCell()
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 50%
+  text-align: center
+  border-radius: 3px
+  background-color: rgb(224, 122, 95, .7)
+  scale: 1.5
+  font-size: 9px
+
+@mixin weekDaysText()
+  color: rgb(var(--secondary-text-rgb))
+
+.calendar
+  @include calendar()
+  .days-wrapper
+    @include daysWrapper()
+    & > div
+      @include dayCell()
+      &:is(.week-day),
+      &:is(.rest-day)
+        @include weekDaysText()
+      &:is(.today)
+        @include todayCell()
