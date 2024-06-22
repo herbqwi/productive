@@ -1,13 +1,16 @@
-import { addMonths, format, startOfMonth, startOfWeek, subMonths, getDayOfYear, getDaysInMonth, endOfMonth, endOfWeek, addDays, toDate, setYear } from "date-fns";
+import { Modal } from "@/@types/modal";
+import { addMonths, format, startOfMonth, startOfWeek, subMonths, endOfMonth, endOfWeek, addDays, toDate, setYear } from "date-fns";
+import { useModalContext } from "@/contexts/modal.context";
 import { FormEvent, useEffect, useRef, useState } from "react"
 
+const MODAL = Modal.DATE_PICKER;
 
 export default function useDatePicker() {
+  const modalContext = useModalContext();
   const [input, setInput] = useState('');
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
   const [selectedDate, setSelectedDate] = useState<Date>();
   const [monthDays, setMonthDays] = useState<Date[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const headerDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
@@ -19,10 +22,6 @@ export default function useDatePicker() {
   const prevMonthHandler = () => (
     setCurrentDate(subMonths(currentDate, 1))
   )
-
-  useEffect(() => {
-    console.log('selectedDate: ', selectedDate);
-  }, [selectedDate])
 
   const inputFormHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -43,19 +42,36 @@ export default function useDatePicker() {
     if (selectedDate) {
       setInput(format(selectedDate, 'dd MMM yyyy'))
     }
-    setIsOpen(false)
+    closeModal()
   }
 
   const cancelHandler = () => {
-    setIsOpen(false)
+    closeModal()
     setSelectedDate(undefined)
   }
 
+  const openModal = () => {
+    modalContext.addModal(MODAL);
+  }
+
+  const closeModal = () => {
+    modalContext.removeModalsAbove(MODAL)
+  }
+
+  const isModalOpen = () => (
+    modalContext.isModalOpened(MODAL)
+  )
+
   useEffect(() => {
-    if (isOpen) {
+    modalContext.addRefs(MODAL, inputRef)
+    modalContext.addRefs(MODAL, datePickerRef)
+  })
+
+  useEffect(() => {
+    if (modalContext.isModalOpened(MODAL)) {
       setCurrentDate(selectedDate || new Date());
     }
-  }, [isOpen, selectedDate, input]);
+  }, [modalContext, modalContext.modalsList, selectedDate, input]);
 
   useEffect(() => {
     let startingDate = startOfWeek(startOfMonth(currentDate));
@@ -70,33 +86,34 @@ export default function useDatePicker() {
     setMonthDays(days);
   }, [currentDate])
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if ((datePickerRef.current && !datePickerRef.current.contains(event.target as Node))
-        && inputRef.current && !inputRef.current.contains(event.target as Node)) {
-        cancelHandler()
-      }
-    };
+  // useEffect(() => {
+  //   const handleClickOutside = (event: MouseEvent) => {
+  //     if ((datePickerRef.current && !datePickerRef.current.contains(event.target as Node))
+  //       && inputRef.current && !inputRef.current.contains(event.target as Node)) {
+  //       cancelHandler()
+  //     }
+  //   };
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        cancelHandler()
-        if (inputRef.current) {
-          inputRef.current.blur();
-        }
-      }
-    };
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     if (event.key === 'Escape') {
+  //       cancelHandler()
+  //       if (inputRef.current) {
+  //         inputRef.current.blur();
+  //       }
+  //     }
+  //   };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
+  //   document.addEventListener('mousedown', handleClickOutside);
+  //   document.addEventListener('keydown', handleKeyDown);
 
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [datePickerRef, inputRef]);
+  //   return () => {
+  //     document.removeEventListener('mousedown', handleClickOutside);
+  //     document.removeEventListener('keydown', handleKeyDown);
+  //   };
+  // }, [datePickerRef, inputRef]);
 
   return {
+    modalContext,
     input: {
       value: input,
       set: setInput
@@ -113,10 +130,6 @@ export default function useDatePicker() {
       value: selectedDate,
       set: setSelectedDate
     },
-    isOpen: {
-      value: isOpen,
-      set: setIsOpen
-    },
     datePickerRef,
     inputRef,
     nextMonthHandler,
@@ -125,6 +138,8 @@ export default function useDatePicker() {
     updateSelectedDate,
     submitHandler,
     cancelHandler,
+    openModal,
+    isModalOpen,
     headerDays
   }
 }

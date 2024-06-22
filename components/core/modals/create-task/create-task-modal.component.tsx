@@ -1,9 +1,9 @@
 import classes from './create-task-modal.module.sass'
 import clsx from 'clsx';
 import { ITask, TaskDeadline, TaskPriority, TaskStatus } from '@/@types/tasks';
-import { useEffect, useState } from 'react';
+import { Modal } from '@/@types/modal';
+import { useEffect, useRef, useState } from 'react';
 import { useModalContext } from '@/contexts/modal.context'
-import { Modals } from '@/@types/modal';
 
 import { Alarm, BoxingGlove, Calendar, CheckCircle, Clock, ExclamationMark, Flag, FlagPennant, HourglassSimple, Pencil, X } from '@phosphor-icons/react/dist/ssr';
 import ModalField from './modal-field/modal-field.component';
@@ -12,23 +12,30 @@ import DatePicker from './date-picker/date-picker.component';
 
 const initTask: ITask = { title: '', description: '', priority: TaskPriority.MID, status: TaskStatus.TO_DO, deadlineType: TaskDeadline.SOFT_DEADLINE, intervals: [], isRecurring: false, labels: [] }
 
+const MODAL: Modal = Modal.NEW_TASK;
+
 export default function CreateTaskModal() {
-  const { currentModal } = useModalContext();
+  const modalContext = useModalContext();
   const [task, setTask] = useState<ITask>(initTask);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const updateTask = (newTask: Partial<ITask>) => (
     setTask(prevTask => ({ ...prevTask, ...newTask }))
   )
 
   useEffect(() => {
+    modalContext.addRefs(MODAL, modalRef);
+  }, [])
+
+  useEffect(() => {
     setTimeout(() => {
       updateTask(initTask);
     }, 300);
-  }, [currentModal.value])
+  }, [modalContext.modalsList])
 
   return (
-    <div className={clsx(classes.wrapper, { [classes.open]: currentModal.value === Modals.NEW_TASK })}>
-      <div className={classes.modal}>
+    <div className={clsx(classes.wrapper, { [classes.open]: modalContext.isModalOpened(MODAL) })}>
+      <div ref={modalRef} className={classes.modal}>
         <div className={classes.header}>
           <div className={classes['icon-wrapper']}>
             <Pencil size={20} weight='fill' />
@@ -41,7 +48,7 @@ export default function CreateTaskModal() {
             placeholder='Task name'
             type="text"
           />
-          <button onClick={(() => { currentModal.set(undefined) })}><X size={18} /></button>
+          <button onClick={() => { modalContext.removeModalsAbove(MODAL) }}><X size={18} /></button>
         </div>
         <textarea className={classes.description} value={task.description} onChange={(e) => { updateTask({ description: e.target.value }) }} placeholder='Task Description'></textarea>
         <ModalField

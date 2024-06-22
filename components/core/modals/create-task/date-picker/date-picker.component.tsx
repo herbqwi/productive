@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import classes from './date-picker.module.sass'
-import { addDays, format } from 'date-fns';
+import { addDays } from 'date-fns';
 import { isDatesEqual } from '@/util/global.utils';
 import useDatePicker from '@/hooks/core/nav-menu/date-picker.hook';
 
@@ -19,12 +19,12 @@ export default function DatePicker() {
           type="text"
           value={datePicker.input.value}
           onChange={(e) => { datePicker.input.set(e.target.value) }}
-          onFocus={() => { datePicker.isOpen.set(true) }}
+          onFocus={datePicker.openModal}
         />
       </form>
       <div
         ref={datePicker.datePickerRef}
-        className={clsx(classes['date-picker'], { [classes.open]: datePicker.isOpen.value })}
+        className={clsx(classes['date-picker'], { [classes.open]: datePicker.isModalOpen() })}
       >
         <div className={classes.suggestions}>
           <button
@@ -46,7 +46,7 @@ export default function DatePicker() {
           {datePicker.headerDays.map(day => (
             <p className={classes['week-day']} key={day}>{day}</p>
           ))}
-          {datePicker.monthDays.value.map(day => (
+          {/* {datePicker.monthDays.value.map(day => (
             <p
               key={day.getDay()}
               className={clsx(classes['month-day'], {
@@ -57,7 +57,7 @@ export default function DatePicker() {
             >
               {format(day, 'd')}
             </p>
-          ))}
+          ))} */}
         </div>
         <div className={classes.actions}>
           <button onClick={datePicker.cancelHandler}>Cancel</button>
