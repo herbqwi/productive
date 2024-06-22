@@ -1,0 +1,148 @@
+@keyframes pencil-flow
+  0%
+    rotate: 0deg
+  50%
+    rotate: 10deg
+  100%
+    rotate: 0deg
+
+@mixin wrapper()
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 100vw
+  height: 100vh
+  background-color: rgba(var(--modal-page-background-rgba))
+  position: absolute
+  z-index: 100
+  transition: .2s all
+  opacity: 0
+  pointer-events: none
+  border: 1px solid var(--modal-border-color)
+
+@mixin wrapper--open()
+  opacity: 1
+  pointer-events: visible
+
+@mixin modal()
+  display: flex
+  flex-direction: column
+  justify-content: flex-start
+  align-items: flex-start
+  row-gap: 15px
+  background-color: rgba(var(--modal-background-rgb))
+  width: 600px
+  padding: 23px 20px
+  border-radius: 10px
+  transition: .3s all
+  opacity: 0
+  transform: translateY(30px)
+  box-shadow: rgba(0, 0, 0, .3) 0px 0px 20px 5px
+  border: 1px solid rgba(255, 255, 255, .04)
+
+@mixin modal--open()
+  opacity: 1
+  transform: translateY(0)
+
+@mixin modalHeader()
+  display: flex
+  align-items: center
+  width: 100%
+
+@mixin headerIconWrapper()
+  position: relative
+  display: flex
+  justify-content: center
+  align-items: center
+  padding: 6px
+  border-radius: 30%
+  margin-right: 12px
+  z-index: 2
+  transition: .2s all
+  &:hover
+    &:before
+      top: 1.5px
+      left: 1.5px
+    &:after
+      bottom: 1.5px
+      right: 1.5px
+  &::before
+    content: ''
+    position: absolute
+    background-color: rgb(244, 162, 97, .1)
+    border-radius: 30%
+    width: 32px
+    height: 32px
+    top: 3px
+    left: 3px
+    transition: .2s all
+  &::after
+    content: ''
+    position: absolute
+    background-color: rgb(244, 162, 97, .1)
+    border-radius: 30%
+    width: 32px
+    height: 32px
+    bottom: 3px
+    right: 3px
+    transition: .2s all
+
+@mixin headerIcon()
+  color: rgb(244, 162, 97)
+  animation: pencil-flow 2s infinite linear
+
+@mixin closeButton()
+  display: flex
+  justify-content: center
+  align-items: center
+  position: relative
+  bottom: 4px
+  align-self: flex-start
+  background-color: transparent
+  border: none
+  color: rgba(255, 255, 255, 0.5)
+  cursor: pointer
+  background-color: rgba(0, 0, 0, .07)
+  border-radius: 30%
+  padding: 5px
+  transition: .2s all
+  border: 1px solid rgba(0, 0, 0, .03)
+  &:hover
+    color: rgba(255, 255, 255, 0.7)
+    background-color: rgba(0, 0, 0, .15)
+  &:active
+    scale: 0.95
+
+@mixin title()
+  flex-grow: 1
+  position: relative
+  top: 2px
+  background-color: transparent
+  color: var(--white-color)
+  font-size: 20px
+  border: none
+  outline: none
+
+@mixin description()
+  @include textField--defaults(61px)
+
+.wrapper
+  @include wrapper()
+  &:is(.open)
+    @include wrapper--open()
+    & > .modal
+      @include modal--open()
+  & > .modal
+    @include modal()
+    & > .header
+      @include modalHeader()
+      & > .title
+        @include title()
+      & > .icon-wrapper
+        @include headerIconWrapper()
+        & > svg
+          @include headerIcon()
+      & > button
+        @include closeButton()
+    & > .description
+      @include description()

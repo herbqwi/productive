@@ -1,0 +1,40 @@
+@mixin optionSelector()
+  display: flex
+  column-gap: 10px
+
+@mixin button()
+  display: flex
+  justify-content: center
+  align-items: center
+  background-color: rgba(0, 0, 0, .1)
+  border: none
+  color: rgb(var(--modal-label-rgb))
+  padding: 5px 10px
+  border-radius: 5px
+  border: 1px solid rgba(0, 0, 0, .05)
+  font-size: 15px
+  cursor: pointer
+  transition: .2s all
+  &:hover
+    color: rgba(255, 255, 255, 0.7)
+    background-color: rgba(0, 0, 0, .15)
+
+@mixin button--selected()
+  background-color: rgba(255, 255, 255, .1)
+  border-color: rgba(255, 255, 255, .03)
+  pointer-events: none
+  &:hover
+    background-color: rgba(255, 255, 255, .1)
+    color: rgb(var(--modal-label-rgb))
+
+@mixin icon()
+  margin-right: 6px
+
+.option-selector
+  @include optionSelector()
+  & > button
+    @include button()
+    &:is(.selected)
+      @include button--selected()
+    & > svg
+      @include icon()

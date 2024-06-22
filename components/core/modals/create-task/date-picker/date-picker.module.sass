@@ -1,0 +1,123 @@
+@mixin wrapper()
+  position: relative
+  transition: .3s all
+
+@mixin dateInput()
+  @include textField--defaults()
+
+@mixin datePicker()
+  position: absolute
+  padding: 11px 13px
+  border-radius: 7px
+  background-color: rgb(32, 32, 32)
+  transition: .2s all
+  opacity: 0
+  transform: translateY(7px)
+  border: 1px solid rgba(255, 255, 255, .05)
+  top: 38px
+  pointer-events: none
+  box-shadow: rgba(15, 15, 15, .4) 0px 0px 20px 5px
+
+@mixin datePicker--open()
+  opacity: 1
+  transform: translateY(0)
+  pointer-events: all
+
+@mixin datePicker-suggestions()
+  display: flex
+  justify-content: center
+  align-items: center
+  column-gap: 10px
+  padding-bottom: 12px
+  border-bottom: 1px solid rgb(45, 48, 56)
+
+@mixin datePicker-suggestions-button()
+  @include button--defaults()
+
+@mixin datePicker-suggestions-button--selected()
+  background-color: rgba(224, 123, 95, 0.15)
+
+@mixin datePicker-calendar()
+  display: grid
+  grid-template-columns: repeat(7, 1fr)
+  justify-content: center
+  gap: 8px
+  align-items: center
+  margin-block: 15px 12px
+  margin-inline: 7px
+
+@mixin datePicker-calendar-weekDay()
+  color: rgb(var(--secondary-text-rgb))
+  font-size: 14px
+  justify-self: center
+  align-self: center
+
+@mixin datePicker-calendar-monthDay()
+  display: flex
+  justify-content: center
+  align-items: center
+  color: white
+  font-size: 13px
+  border-radius: 8px
+  scale: 1.1
+  width: 100%
+  aspect-ratio: 1
+  transition: .25s all
+  cursor: pointer
+  padding: 5px
+  &:hover
+    background-color: rgba(255, 255, 255, .08)
+
+@mixin datePicker-calendar-monthDay--selected()
+  background-color: rgba(var(--today-cell), 0.8)
+  color: white
+  pointer-events: none
+
+@mixin datePicker-calendar-monthDay--outmonth()
+  color: rgb(var(--secondary-text-rgb))
+
+@mixin actions()
+  display: flex
+  justify-content: center
+  align-items: center
+  column-gap: 20px
+  padding-top: 12px
+  border-top: 1px solid rgb(45, 48, 56)
+
+@mixin actions-button()
+  flex-grow: 1
+  @include button--defaults()
+
+@mixin actions-submitButton()
+  background-color: rgb(224, 122, 95)
+
+.wrapper
+  @include wrapper()
+  & > form > .date-input
+    @include dateInput()
+  & > .date-picker
+    @include datePicker()
+    &:is(.open)
+      @include datePicker--open()
+    & > .suggestions
+      @include datePicker-suggestions()
+      & > button
+        @include datePicker-suggestions-button()
+        &:is(.selected)
+          @include datePicker-suggestions-button--selected()
+    & > .calendar
+      @include datePicker-calendar()
+      & > .week-day
+        @include datePicker-calendar-weekDay()
+      & > .month-day
+        &:is(.outmonth)
+          @include datePicker-calendar-monthDay--outmonth()
+        @include datePicker-calendar-monthDay()
+        &:is(.selected)
+          @include datePicker-calendar-monthDay--selected()
+    & > .actions
+      @include actions()
+      & > button
+        @include actions-button()
+        &:is(.submit)
+          @include actions-submitButton()

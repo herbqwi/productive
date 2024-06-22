@@ -1,0 +1,11 @@
+@mixin field()
+
+@mixin label()
+  font-size: 15px
+  color: rgb(var(--modal-label-rgb))
+  margin-bottom: 7px
+
+.field
+  @include field()
+  & > p
+    @include label()

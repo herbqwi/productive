@@ -1,14 +1,6 @@
 $spacing-outside: 10px
 $sliding-animation-time: .6s
 
-@keyframes color-shift
-  0%
-    color: rgb(120, 120, 120)
-  50%
-    color: rgb(80, 80, 80)
-  100%
-    color: rgb(120, 120, 120)
-
 @mixin wrapper()
   display: flex
   flex-direction: column
@@ -16,11 +8,12 @@ $sliding-animation-time: .6s
   position: relative
   height: 100%
   background-color: rgba(var(--nav-menu-rgb), 1)
-  box-shadow: rgba(100, 100, 100, .05) 0px 0px 20px 0px
+  box-shadow: rgba(255, 255, 255, 0.05) -1px 0px 0px 0px inset
   width: 270px
   align-self: center
   padding: 10px
   transition: $sliding-animation-time all
+  overflow: hidden
 
 @mixin wrapper--closed()
   width: 100px
@@ -43,6 +36,10 @@ $sliding-animation-time: .6s
   &:focus
     background-color: rgba(var(--card-active-rgba))
 
+@mixin newTaskButton()
+  @include button--defaults(.99, .06)
+  font-size: 14px
+
 .wrapper
   @include wrapper()
   &:is(.closed)
@@ -51,3 +48,5 @@ $sliding-animation-time: .6s
     @include section()
     &:is(:global(.highlightable))
       @include section--highlightable()
+  & > button
+    @include newTaskButton()

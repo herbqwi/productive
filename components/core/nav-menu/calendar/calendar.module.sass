@@ -1,40 +1,98 @@
+$calendar-width: 250px
+$days-width: 230px
+$sliding-animation-time: .6s
+
 @mixin calendar()
-  width: 100%
+  width: $calendar-width
   padding-inline: 10px
+  transition: $sliding-animation-time all
+
+@mixin calendar--closed()
+  padding-left: 0px
+  padding-right: 40px
+
+@mixin calendar--closed--daysWrapper()
+  opacity: 0
+  transform: translateX(-30px)
 
 @mixin daysWrapper()
-  width: 100%
+  width: $days-width
   display: grid
-  row-gap: 15px
   grid-template-columns: repeat(7, 1fr)
   font-size: 12px
+  opacity: 1
+  transition: $sliding-animation-time all
+  overflow: hidden
 
 @mixin dayCell()
-  justify-self: center
-  color: white
-
-@mixin todayCell()
   display: flex
   justify-content: center
   align-items: center
-  width: 50%
+  justify-self: center
+  color: white
+  margin-block: 2px
+  width: 100%
+  border-radius: 5px
+  transition: .2s all
+  padding-block: 5px
+  border: 3px solid transparent
+  &:not(.week-day):hover
+    background-color: rgb(var(--selected-cell-rgb))
+    cursor: pointer
+
+@mixin todayCell()
+  background-color: rgba(var(--today-cell), .7)
+  &:is(.selected),
+  &:is(.first-selected),
+  &:is(.last-selected)
+    border: 3px solid rgba(var(--selected-cell-rgb), .8)
+  &:hover
+    background-color: rgba(var(--today-cell), .8)
+
+@mixin selectedCell()
+  display: flex
+  justify-content: center
+  align-items: center
+  width: 100%
   text-align: center
-  border-radius: 3px
-  background-color: rgb(224, 122, 95, .7)
-  scale: 1.5
-  font-size: 9px
+  background-color: rgba(var(--selected-cell-rgb), .8)
+  border-radius: 0px
+
+@mixin selectedCell--first()
+  width: 100%
+  background-color: rgba(var(--selected-cell-rgb), .8)
+  border-radius: 0px
+  border-top-left-radius: 7px
+  border-bottom-left-radius: 7px
+
+@mixin selectedCell--last()
+  width: 100%
+  background-color: rgb(var(--selected-cell-rgb))
+  border-radius: 0px
+  border-top-right-radius: 7px
+  border-bottom-right-radius: 7px
 
 @mixin weekDaysText()
   color: rgb(var(--secondary-text-rgb))
 
 .calendar
   @include calendar()
-  .days-wrapper
+  &:is(.closed)
+    @include calendar--closed()
+    & > .days-wrapper
+      @include calendar--closed--daysWrapper()
+  & > .days-wrapper
     @include daysWrapper()
     & > div
       @include dayCell()
       &:is(.week-day),
-      &:is(.rest-day)
+      &:is(.next-month)
         @include weekDaysText()
+      &:is(.selected)
+        @include selectedCell()
+      &:is(.first-selected)
+        @include selectedCell--first()
+      &:is(.last-selected)
+        @include selectedCell--last()
       &:is(.today)
         @include todayCell()
