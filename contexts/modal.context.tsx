@@ -1,9 +1,10 @@
 'use client'
 import { useContext, createContext, useEffect, RefObject } from "react";
 import { IModalContext, Modal } from "@/@types/modal";
-import { useMap, useQueue } from "@uidotdev/usehooks";
+import { useMap } from "@uidotdev/usehooks";
 
 import CreateTaskModal from "@/components/core/modals/create-task/create-task-modal.component";
+import useStack from "@/hooks/core/stack.hook";
 
 const ModalContext = createContext<IModalContext>(null as any);
 
@@ -18,7 +19,7 @@ interface IProps {
 }
 
 export function ModalContextProvider({ children }: IProps) {
-  const { add, remove, queue, first } = useQueue<Modal>([]);
+  const { stack: modals, addItem, removeItem, remove, top } = useStack<Modal>();
   const refsMap = useMap<Modal>()
 
   const addRefs = (modal: Modal, ref: RefObject<HTMLElement>) => {
@@ -27,26 +28,26 @@ export function ModalContextProvider({ children }: IProps) {
   }
 
   const isModalOpened = (modal: Modal) => (
-    queue.includes(modal)
+    modals.includes(modal)
   )
 
   const removeModalsAbove = (modal: Modal) => {
     do {
       remove()
-    } while (first != modal)
+    } while (top != modal)
   }
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (!first) {
+      if (!top) {
         return
       }
 
-      const currentModalRefs = refsMap.get(first);
+      const currentModalRefs: RefObject<HTMLDivElement>[] = refsMap.get(top);
 
       if (currentModalRefs.length
-        && !(currentModalRefs.every((currentModalRef: RefObject<HTMLDivElement>) => ((
-          currentModalRef.current != null && (currentModalRef.current.contains(event.target as Node))
+        && (currentModalRefs.every((currentModalRef: RefObject<HTMLDivElement>) => ((
+          currentModalRef.current != null && !(currentModalRef.current.contains(event.target as Node))
         ))))
       ) {
         remove()
@@ -66,12 +67,12 @@ export function ModalContextProvider({ children }: IProps) {
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [refsMap, first, remove]);
+  }, [refsMap, top, remove, modals]);
 
   return (
     <ModalContext.Provider value={{
-      addModal: add,
-      modalsList: queue,
+      addModal: addItem,
+      modalsList: modals,
       isModalOpened,
       removeModalsAbove,
       addRefs

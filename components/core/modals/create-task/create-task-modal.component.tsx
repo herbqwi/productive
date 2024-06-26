@@ -9,6 +9,7 @@ import { Alarm, BoxingGlove, Calendar, CheckCircle, Clock, ExclamationMark, Flag
 import ModalField from './modal-field/modal-field.component';
 import OptionSelector from './option-selector/option-selector.component';
 import DatePicker from './date-picker/date-picker.component';
+import Input from '../../input/input.component';
 
 const initTask: ITask = { title: '', description: '', priority: TaskPriority.MID, status: TaskStatus.TO_DO, deadlineType: TaskDeadline.SOFT_DEADLINE, intervals: [], isRecurring: false, labels: [] }
 
@@ -27,7 +28,7 @@ export default function CreateTaskModal() {
     modalContext.addRefs(MODAL, modalRef);
   }, [])
 
-  useEffect(() => {
+  useEffect(() => { // Reset the task to defaults
     setTimeout(() => {
       updateTask(initTask);
     }, 300);
@@ -40,7 +41,7 @@ export default function CreateTaskModal() {
           <div className={classes['icon-wrapper']}>
             <Pencil size={20} weight='fill' />
           </div>
-          <input
+          <Input
             className={classes.title}
             value={task.title}
             onChange={(e) => { updateTask({ title: e.target.value }) }}
@@ -52,7 +53,7 @@ export default function CreateTaskModal() {
         </div>
         <textarea className={classes.description} value={task.description} onChange={(e) => { updateTask({ description: e.target.value }) }} placeholder='Task Description'></textarea>
         <ModalField
-          label={<p>Date</p>}
+          label={<p>Date and Time</p>}
         >
           <DatePicker />
         </ModalField>

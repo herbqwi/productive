@@ -1,3 +1,5 @@
+$cell-dimentions: 30px
+
 @mixin wrapper()
   position: relative
   transition: .3s all
@@ -26,25 +28,57 @@
 @mixin datePicker-suggestions()
   display: flex
   justify-content: center
-  align-items: center
+  align-items: stretch
   column-gap: 10px
   padding-bottom: 12px
+  margin-bottom: 12px
   border-bottom: 1px solid rgb(45, 48, 56)
+  font-size: 13px
 
 @mixin datePicker-suggestions-button()
-  @include button--defaults()
+  @include button--defaults(1)
+  flex: 1
+
+@mixin datePicker-suggestions-timeButton()
+  padding-block: 0
+  & > svg
+    display: flex
 
 @mixin datePicker-suggestions-button--selected()
   background-color: rgba(224, 123, 95, 0.15)
+
+@mixin header()
+  display: flex
+  justify-content: space-between
+  align-items: center
+  width: 100%
+  color: white
+  font-size: 15px
+
+@mixin header-updateDateBtn()
+  @include button--defaults(unset)
+  display: flex
+  justify-content: center
+  align-items: center
+  padding: 7px
+  width: 32px
+  aspect-ratio: 1
 
 @mixin datePicker-calendar()
   display: grid
   grid-template-columns: repeat(7, 1fr)
   justify-content: center
-  gap: 8px
+  gap: 3px
   align-items: center
   margin-block: 15px 12px
   margin-inline: 7px
+
+@mixin datePicker-calendar-p()
+  display: flex
+  justify-content: center
+  align-items: center
+  width: $cell-dimentions
+  height: $cell-dimentions
 
 @mixin datePicker-calendar-weekDay()
   color: rgb(var(--secondary-text-rgb))
@@ -53,18 +87,12 @@
   align-self: center
 
 @mixin datePicker-calendar-monthDay()
-  display: flex
-  justify-content: center
-  align-items: center
   color: white
-  font-size: 13px
-  border-radius: 8px
-  scale: 1.1
-  width: 100%
+  font-size: 14px
+  border-radius: 6px
   aspect-ratio: 1
   transition: .25s all
   cursor: pointer
-  padding: 5px
   &:hover
     background-color: rgba(255, 255, 255, .08)
 
@@ -83,6 +111,7 @@
   column-gap: 20px
   padding-top: 12px
   border-top: 1px solid rgb(45, 48, 56)
+  font-size: 13px
 
 @mixin actions-button()
   flex-grow: 1
@@ -93,7 +122,7 @@
 
 .wrapper
   @include wrapper()
-  & > form > .date-input
+  & > .date-input
     @include dateInput()
   & > .date-picker
     @include datePicker()
@@ -103,10 +132,18 @@
       @include datePicker-suggestions()
       & > button
         @include datePicker-suggestions-button()
+        &:is(.time)
+          @include datePicker-suggestions-timeButton()
         &:is(.selected)
           @include datePicker-suggestions-button--selected()
+    & > .header
+      @include header()
+      & > button
+        @include header-updateDateBtn()
     & > .calendar
       @include datePicker-calendar()
+      & > p
+        @include datePicker-calendar-p()
       & > .week-day
         @include datePicker-calendar-weekDay()
       & > .month-day

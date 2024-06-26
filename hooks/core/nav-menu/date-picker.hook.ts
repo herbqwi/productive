@@ -1,7 +1,7 @@
 import { Modal } from "@/@types/modal";
 import { addMonths, format, startOfMonth, startOfWeek, subMonths, endOfMonth, endOfWeek, addDays, toDate, setYear } from "date-fns";
 import { useModalContext } from "@/contexts/modal.context";
-import { FormEvent, useEffect, useRef, useState } from "react"
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 
 const MODAL = Modal.DATE_PICKER;
 
@@ -25,6 +25,7 @@ export default function useDatePicker() {
 
   const inputFormHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log('test');
     let actualDate = toDate(input);
     console.log(actualDate.getFullYear());
     if (actualDate.getFullYear() === 2001) {
@@ -58,14 +59,16 @@ export default function useDatePicker() {
     modalContext.removeModalsAbove(MODAL)
   }
 
-  const isModalOpen = () => (
-    modalContext.isModalOpened(MODAL)
-  )
+  const isModalOpen = useMemo(() => {
+    return modalContext.isModalOpened(MODAL);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalContext, modalContext.modalsList])
 
   useEffect(() => {
-    modalContext.addRefs(MODAL, inputRef)
     modalContext.addRefs(MODAL, datePickerRef)
-  })
+    modalContext.addRefs(MODAL, inputRef)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (modalContext.isModalOpened(MODAL)) {

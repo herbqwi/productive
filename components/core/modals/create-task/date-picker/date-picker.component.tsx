@@ -1,30 +1,28 @@
 import clsx from 'clsx';
 import classes from './date-picker.module.sass'
-import { addDays } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import { isDatesEqual } from '@/util/global.utils';
 import useDatePicker from '@/hooks/core/nav-menu/date-picker.hook';
 
-import DatePickerHeader from './date-picker-header/date-picker-header.component';
+import { CaretLeft, CaretRight, Timer } from '@phosphor-icons/react/dist/ssr';
 
 export default function DatePicker() {
   const datePicker = useDatePicker();
 
   return (
     <div className={classes.wrapper}>
-      <form onSubmit={datePicker.inputFormHandler}>
-        <input
-          ref={datePicker.inputRef}
-          className={classes['date-input']}
-          placeholder='Select a date'
-          type="text"
-          value={datePicker.input.value}
-          onChange={(e) => { datePicker.input.set(e.target.value) }}
-          onFocus={datePicker.openModal}
-        />
-      </form>
+      <input
+        ref={datePicker.inputRef}
+        className={classes['date-input']}
+        placeholder='Select a date'
+        type="text"
+        value={datePicker.input.value}
+        onChange={(e) => { datePicker.input.set(e.target.value) }}
+        onFocus={datePicker.openModal}
+      />
       <div
         ref={datePicker.datePickerRef}
-        className={clsx(classes['date-picker'], { [classes.open]: datePicker.isModalOpen() })}
+        className={clsx(classes['date-picker'], { [classes.open]: datePicker.isModalOpen })}
       >
         <div className={classes.suggestions}>
           <button
@@ -39,16 +37,27 @@ export default function DatePicker() {
           >
             Tomorrow
           </button>
-          <button>Custom</button>
+          <button className={classes.time}><Timer size={20} /></button>
         </div>
-        <DatePickerHeader {...datePicker} />
+        <div className={classes.header}>
+          <button aria-label='Previous month' onClick={datePicker.prevMonthHandler}><CaretLeft size={17} weight='bold' /></button>
+          <form onSubmit={datePicker.inputFormHandler}>
+            <input
+              type="text"
+              value={datePicker.input.value}
+              onChange={(e) => { datePicker.input.set(e.target.value) }}
+            />
+          </form>
+          {/* <p><span>{format(datePicker.currentDate.value, 'MMM')}</span> <span className={classes.year}>{format(datePicker.currentDate.value, 'yyyy')}</span></p> */}
+          <button aria-label='Next month' onClick={datePicker.nextMonthHandler}><CaretRight size={17} weight='bold' /></button>
+        </div>
         <div className={classes.calendar}>
           {datePicker.headerDays.map(day => (
             <p className={classes['week-day']} key={day}>{day}</p>
           ))}
-          {/* {datePicker.monthDays.value.map(day => (
+          {datePicker.monthDays.value.map(day => (
             <p
-              key={day.getDay()}
+              key={day.toUTCString()}
               className={clsx(classes['month-day'], {
                 [classes.outmonth]: day.getMonth() != datePicker.currentDate.value.getMonth(),
                 [classes.selected]: isDatesEqual(day, datePicker.selectedDate.value)
@@ -57,7 +66,7 @@ export default function DatePicker() {
             >
               {format(day, 'd')}
             </p>
-          ))} */}
+          ))}
         </div>
         <div className={classes.actions}>
           <button onClick={datePicker.cancelHandler}>Cancel</button>
