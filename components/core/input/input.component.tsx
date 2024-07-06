@@ -10,7 +10,8 @@ export type IInputProps = HTMLInputProps & {
     regex?: RegExp[];
     handler?: ((text: string) => boolean)[];
     errorMessage?: string;
-  }[]
+  }[];
+  closestFormSubmit?: boolean
 }
 
 export default function Input(props: IInputProps) {
@@ -26,7 +27,7 @@ export default function Input(props: IInputProps) {
     if (!props.validationRules) {
       return true;
     }
-    
+
     const isInputValid = props.validationRules?.find(validationRule => {
       const isRegexRuleValid = validationRule.regex?.find(regexRule => {
         const isRegexRuleValid = regexRule.test(props.value?.toString() || '');
@@ -51,7 +52,17 @@ export default function Input(props: IInputProps) {
     return !!isInputValid;
   }
 
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const form = e.currentTarget.closest('form');
+      if (form) {
+        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      }
+    }
+  };
+
   return (
-    <input ref={ref} type="text" {...props} className={clsx(classes.input, props.className, { invalid: !isValid })} />
+    <input ref={ref} type="text" {...props} className={clsx(classes.input, props.className, { invalid: !isValid })} {...(props.closestFormSubmit && { onKeyDown: handleKeyPress })} />
   )
 }

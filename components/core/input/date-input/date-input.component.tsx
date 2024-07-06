@@ -1,5 +1,5 @@
 import Input, { IInputProps } from '../input.component';
-import { isValid, toDate } from 'date-fns';
+import { format, isValid, toDate } from 'date-fns';
 
 export default function DateInput(props: IInputProps) {
   const validationHandler = (text: string) => (
@@ -10,10 +10,12 @@ export default function DateInput(props: IInputProps) {
     <Input
       {...props}
       type='text'
-      // validationRules={[{
-      //   handler: [validationHandler],
-      //   errorMessage: 'Invalid date'
-      // }]}
+      placeholder={format(new Date(), 'MMM d, yyyy')}
+      validationRules={[{
+        handler: [validationHandler],
+        errorMessage: 'Invalid date'
+      }]}
+      closestFormSubmit
     />
   )
 }

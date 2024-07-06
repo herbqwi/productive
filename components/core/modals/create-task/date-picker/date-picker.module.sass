@@ -64,6 +64,9 @@ $cell-dimentions: 30px
   & > svg
     display: flex
 
+@mixin datePicker-suggestions-timeButton--active()
+  background-color: rgba(224, 123, 95, 0.15)
+
 @mixin datePicker-suggestions-button--selected()
   background-color: rgba(224, 123, 95, 0.15)
 
@@ -86,27 +89,31 @@ $cell-dimentions: 30px
 
 @mixin header-inputForm()
   @include input--defaults()
-  width: 68%
   display: flex
+  justify-content: space-between
+  width: 68%
+  column-gap: 10px
+  padding-block: 5px
+  padding-inline: 7px
+  &:has(:global(.invalid)) > input
+    border-color: transparent
 
 @mixin header-inputForm-input()
   padding: 0
   margin: 0
   background-color: transparent
   border-radius: 0
-  width: 100%
+  &:is(.date-input)
+    flex: 1.25
   &:is(.time-input)
+    flex: 1
     display: none
 
-@mixin header-inputForm--showTime-input()
-  &:is(.date-input)
-    width: 54%
-    padding-inline-end: 9px
-  &:is(.time-input)
-    display: block
-    width: 46%
-    border-left: 1px solid rgba(255, 255, 255, .3)
-    padding-inline-start: 10px
+@mixin header-inputForm--showTime-timeInput()
+  display: block
+
+@mixin header-inputForm--showTime-border()
+  display: block
 
 @mixin datePicker-calendar()
   display: grid
@@ -179,6 +186,8 @@ $cell-dimentions: 30px
         @include datePicker-suggestions-button()
         &:is(.time)
           @include datePicker-suggestions-timeButton()
+          &:is(.active)
+            @include datePicker-suggestions-timeButton--active()
         &:is(.selected)
           @include datePicker-suggestions-button--selected()
     & > .header
@@ -187,10 +196,16 @@ $cell-dimentions: 30px
         @include header-updateDateBtn()
       & > .input-form
         @include header-inputForm()
-        &:is(.show-time) > input
-          @include header-inputForm--showTime-input
+        &:is(.show-time)
+          & > .time-input
+            @include header-inputForm--showTime-timeInput()
+          & > .border
+            @include header-inputForm--showTime-border()
         & > input
           @include header-inputForm-input()
+        & > .border
+          @include border-block--defaults()
+          display: none
     & > .calendar
       @include datePicker-calendar()
       & > p

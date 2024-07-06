@@ -19,7 +19,7 @@ export default function DatePicker() {
         className={classes['date-input']}
         placeholder='Select a date'
         type="text"
-        value={convertDateToString(datePicker.dateValue.value)}
+        value={convertDateToString(datePicker.finalDateTime.value, `MMM d, yyyy${datePicker.currentTime.value ? ' h:mm a' : ''}`)}
         onChange={(e) => { }}
         onFocus={datePicker.openModal}
       />
@@ -30,7 +30,7 @@ export default function DatePicker() {
         >
           <div className={classes.suggestions}>
             <button
-              className={clsx({ [classes.selected]: isDatesEqual(datePicker.dateValue.value, new Date()) })}
+              className={clsx({ [classes.selected]: isDatesEqual(datePicker.currentDate.value, new Date()) })}
               onClick={() => { datePicker.selectedDateChangeHandler(new Date()) }}
               aria-label="Set today as the selected date"
               title='Set today as the selected date'
@@ -38,7 +38,7 @@ export default function DatePicker() {
               Today
             </button>
             <button
-              className={clsx({ [classes.selected]: isDatesEqual(datePicker.dateValue.value, addDays(new Date(), 1)) })}
+              className={clsx({ [classes.selected]: isDatesEqual(datePicker.currentDate.value, addDays(new Date(), 1)) })}
               onClick={() => { datePicker.selectedDateChangeHandler(addDays(new Date(), 1)) }}
               aria-label="Set tomorrow as the selected date"
               title="Set tomorrow as the selected date"
@@ -46,11 +46,12 @@ export default function DatePicker() {
               Tomorrow
             </button>
             <button
-              className={classes.time}
-              aria-label="Toggle duration"
-              title="Toggle duration"
-            ><Timer size={20}
-              />
+              className={clsx(classes.time, datePicker.isShowTime.value && classes.active)}
+              aria-label="Toggle time selection"
+              title="Toggle time selection"
+              onClick={datePicker.isShowTime.toggle}
+            >
+              <Timer size={20} />
             </button>
           </div>
           <div className={classes.header}>
@@ -60,12 +61,13 @@ export default function DatePicker() {
             The following input forms doesn't submit automatically when having two inputs inside of it.
             This behavior isn't acceptable and a proper solution should be found.
             */}
-            <Form className={clsx(classes['input-form'], { [classes['show-time']]: true })} onSubmit={datePicker.inputFormHandler}>
+            <Form className={clsx(classes['input-form'], { [classes['show-time']]: datePicker.isShowTime.value })} onSubmit={datePicker.inputFormHandler}>
               <DateInput
                 className={classes['date-input']}
                 value={datePicker.dateInputValue.value}
                 onChange={(e) => { datePicker.dateInputValue.set(e.target.value) }}
               />
+              <div className={classes.border} />
               <TimeInput
                 className={classes['time-input']}
                 value={datePicker.timeInputValue.value}
@@ -84,7 +86,7 @@ export default function DatePicker() {
                 key={day.toUTCString()}
                 className={clsx(classes['month-day'], {
                   [classes.outmonth]: day.getMonth() != datePicker.viewportDate.value.getMonth(),
-                  [classes.selected]: isDatesEqual(day, datePicker.dateValue.value)
+                  [classes.selected]: isDatesEqual(day, datePicker.currentDate.value)
                 })}
                 onClick={() => { datePicker.selectedDateChangeHandler(day) }}
               >

@@ -39,6 +39,10 @@
   border-radius: 6px
   border: 2px solid transparent
   transition: .1s all
-  &:is(:global(.invalid))
+  &:is(:global(.invalid)),
+  &:has(:global(.invalid))
     border-color: rgb(235, 87, 87)
     background-color: rgb(66, 44, 44)
+
+@mixin border-block--defaults()
+  border-right: 1px solid rgba(255, 255, 255, .2)
