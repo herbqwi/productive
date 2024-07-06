@@ -49,12 +49,18 @@ export default function DatePicker() {
               className={classes.time}
               aria-label="Toggle duration"
               title="Toggle duration"
-            ><Timer size={20} />
+            ><Timer size={20}
+              />
             </button>
           </div>
           <div className={classes.header}>
             <button aria-label='Previous month' title='Previous month' onClick={datePicker.prevMonthHandler}><CaretLeft size={17} weight='bold' /></button>
-            <Form className={clsx(classes['input-form'], { [classes['show-time']]: true })} onSubmit={(e: any) => { e.preventDefault(); console.log('test') }}>
+            {/*
+            Bug (HIGH-PRIORITY):
+            The following input forms doesn't submit automatically when having two inputs inside of it.
+            This behavior isn't acceptable and a proper solution should be found.
+            */}
+            <Form className={clsx(classes['input-form'], { [classes['show-time']]: true })} onSubmit={datePicker.inputFormHandler}>
               <DateInput
                 className={classes['date-input']}
                 value={datePicker.dateInputValue.value}
