@@ -14,6 +14,7 @@ export default function MenuHeader(props: IProps) {
       className={clsx(classes.header, 'highlightable', { [classes.closed]: !props.open.value })}
       onClick={props.open.toggle}
       aria-label='Toggle menu'
+      title='Toggle menu'
     >
       <div className={classes.logo}>
         <p>Be Productive<span>.</span></p>

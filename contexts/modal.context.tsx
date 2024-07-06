@@ -2,9 +2,9 @@
 import { useContext, createContext, useEffect, RefObject } from "react";
 import { IModalContext, Modal } from "@/@types/modal";
 import { useMap } from "@uidotdev/usehooks";
+import useStack from "@/hooks/common/stack.hook";
 
 import CreateTaskModal from "@/components/core/modals/create-task/create-task-modal.component";
-import useStack from "@/hooks/core/stack.hook";
 
 const ModalContext = createContext<IModalContext>(null as any);
 
@@ -27,7 +27,7 @@ export function ModalContextProvider({ children }: IProps) {
     refsMap.set(modal, [...prevRefs, ref])
   }
 
-  const isModalOpened = (modal: Modal) => (
+  const isModalOpen = (modal: Modal) => (
     modals.includes(modal)
   )
 
@@ -73,7 +73,7 @@ export function ModalContextProvider({ children }: IProps) {
     <ModalContext.Provider value={{
       addModal: addItem,
       modalsList: modals,
-      isModalOpened,
+      isModalOpen,
       removeModalsAbove,
       addRefs
     }}>

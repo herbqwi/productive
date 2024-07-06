@@ -1,84 +1,106 @@
 import { Modal } from "@/@types/modal";
-import { addMonths, format, startOfMonth, startOfWeek, subMonths, endOfMonth, endOfWeek, addDays, toDate, setYear } from "date-fns";
+import { addMonths, format, startOfMonth, startOfWeek, subMonths, endOfMonth, endOfWeek, addDays, toDate, setYear, isDate, isValid } from "date-fns";
 import { useModalContext } from "@/contexts/modal.context";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
+import { convertDateToString } from "@/util/global.utils";
+import useValueDelay from "@/hooks/common/delay.hook";
 
-const MODAL = Modal.DATE_PICKER;
+const THIS_MODAL = Modal.DATE_PICKER;
 
 export default function useDatePicker() {
   const modalContext = useModalContext();
-  const [input, setInput] = useState('');
-  const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [dateInputValue, setDateInputValue] = useState(convertDateToString(new Date()));
+  const [timeInputValue, setTimeInputValue] = useState('');
+  const [dateValue, setDateValue] = useState<Date>();
+  const [viewportDate, setViewportDate] = useState<Date>(new Date());
   const [monthDays, setMonthDays] = useState<Date[]>([]);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const headerDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
   const nextMonthHandler = () => (
-    setCurrentDate(addMonths(currentDate, 1))
+    setViewportDate(addMonths(viewportDate, 1))
   )
 
   const prevMonthHandler = () => (
-    setCurrentDate(subMonths(currentDate, 1))
+    setViewportDate(subMonths(viewportDate, 1))
   )
 
   const inputFormHandler = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('test');
-    let actualDate = toDate(input);
-    console.log(actualDate.getFullYear());
+
+    // if (!dateInputValue && !timeInputValue) {
+    //   selectedDateChangeHandler();
+    //   return;
+    // }
+    console.log('selected');
+
+    let actualDate = toDate(dateInputValue);
+    console.log('selected');
+    /**
+     * Bug (LOW-PRIORITY):
+     * The toDate method in date-fns library returns 2001 as the year of the new date in case if inputValue property is an invalid date format.
+     * and this in case (returning 2001 as a date) we consider it to be an invalid date, and immediately turned it into the date of today.
+     * That should be fixed and toDate method should directly return the date of today instead of all this.
+     */
     if (actualDate.getFullYear() === 2001) {
       actualDate = setYear(actualDate, (new Date).getFullYear());
     }
-    updateSelectedDate(actualDate)
+    selectedDateChangeHandler(actualDate);
+
+    const actualDateStringValue = convertDateToString(actualDate);
+
+    setDateInputValue(actualDateStringValue);
+    setDateValue(actualDate)
   }
 
-  const updateSelectedDate = (date: Date) => {
-    setSelectedDate(date)
-    setCurrentDate(date)
+  const selectedDateChangeHandler = (date?: Date) => {
+    setDateValue(date);
+    setDateInputValue(convertDateToString(date));
+    // setTimeInputValue(convertDateToString(date, 'hh:mm a'));
+    setViewportDate(date || new Date());
   }
 
-  const submitHandler = () => {
-    if (selectedDate) {
-      setInput(format(selectedDate, 'dd MMM yyyy'))
-    }
-    closeModal()
-  }
+  const dateInputValidator = (text: string) => (
+    isValid(toDate(text)) || !text
+  );
 
   const cancelHandler = () => {
     closeModal()
-    setSelectedDate(undefined)
+    setDateValue(undefined)
   }
 
   const openModal = () => {
-    modalContext.addModal(MODAL);
+    modalContext.addModal(THIS_MODAL);
   }
 
   const closeModal = () => {
-    modalContext.removeModalsAbove(MODAL)
+    modalContext.removeModalsAbove(THIS_MODAL)
   }
 
-  const isModalOpen = useMemo(() => {
-    return modalContext.isModalOpened(MODAL);
+  var isModalOpen = useMemo(() => {
+    return modalContext.isModalOpen(THIS_MODAL);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalContext, modalContext.modalsList])
 
+
   useEffect(() => {
-    modalContext.addRefs(MODAL, datePickerRef)
-    modalContext.addRefs(MODAL, inputRef)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    modalContext.addRefs(THIS_MODAL, datePickerRef)
+    modalContext.addRefs(THIS_MODAL, inputRef)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  //**Every time the user reopens the modal, it should always send him back to the current date port view */
   useEffect(() => {
-    if (modalContext.isModalOpened(MODAL)) {
-      setCurrentDate(selectedDate || new Date());
+    if (isModalOpen) {
+      setViewportDate(dateValue || new Date());
     }
-  }, [modalContext, modalContext.modalsList, selectedDate, input]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalContext, modalContext.modalsList]);
 
   useEffect(() => {
-    let startingDate = startOfWeek(startOfMonth(currentDate));
-    const endingDate = endOfWeek(endOfMonth(currentDate));
+    let startingDate = startOfWeek(startOfMonth(viewportDate));
+    const endingDate = endOfWeek(endOfMonth(viewportDate));
     const days = [];
 
     while (startingDate <= endingDate) {
@@ -87,59 +109,37 @@ export default function useDatePicker() {
     }
 
     setMonthDays(days);
-  }, [currentDate])
-
-  // useEffect(() => {
-  //   const handleClickOutside = (event: MouseEvent) => {
-  //     if ((datePickerRef.current && !datePickerRef.current.contains(event.target as Node))
-  //       && inputRef.current && !inputRef.current.contains(event.target as Node)) {
-  //       cancelHandler()
-  //     }
-  //   };
-
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     if (event.key === 'Escape') {
-  //       cancelHandler()
-  //       if (inputRef.current) {
-  //         inputRef.current.blur();
-  //       }
-  //     }
-  //   };
-
-  //   document.addEventListener('mousedown', handleClickOutside);
-  //   document.addEventListener('keydown', handleKeyDown);
-
-  //   return () => {
-  //     document.removeEventListener('mousedown', handleClickOutside);
-  //     document.removeEventListener('keydown', handleKeyDown);
-  //   };
-  // }, [datePickerRef, inputRef]);
+  }, [viewportDate])
 
   return {
     modalContext,
-    input: {
-      value: input,
-      set: setInput
+    dateInputValue: {
+      value: dateInputValue,
+      set: setDateInputValue
     },
-    currentDate: {
-      value: currentDate,
-      set: setCurrentDate
+    timeInputValue: {
+      value: timeInputValue,
+      set: setTimeInputValue
+    },
+    viewportDate: {
+      value: viewportDate,
+      set: setViewportDate
     },
     monthDays: {
       value: monthDays,
       set: setMonthDays
     },
-    selectedDate: {
-      value: selectedDate,
-      set: setSelectedDate
+    dateValue: {
+      value: dateValue,
+      set: setDateValue
     },
     datePickerRef,
     inputRef,
     nextMonthHandler,
     prevMonthHandler,
     inputFormHandler,
-    updateSelectedDate,
-    submitHandler,
+    selectedDateChangeHandler,
+    dateInputValidator,
     cancelHandler,
     openModal,
     isModalOpen,

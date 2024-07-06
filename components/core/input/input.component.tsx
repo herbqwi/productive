@@ -1,10 +1,57 @@
-import { InputHTMLAttributes } from 'react';
+import { InputHTMLAttributes, useEffect, useRef, useState } from 'react';
 import classes from './input.module.sass'
+import clsx from 'clsx';
+import { useForm } from '../form/form.component';
 
-type IProps = InputHTMLAttributes<HTMLInputElement>;
+type HTMLInputProps = InputHTMLAttributes<HTMLInputElement>;
 
-export default function Input(props: IProps) {
+export type IInputProps = HTMLInputProps & {
+  validationRules?: {
+    regex?: RegExp[];
+    handler?: ((text: string) => boolean)[];
+    errorMessage?: string;
+  }[]
+}
+
+export default function Input(props: IInputProps) {
+  const [isValid, setIsValid] = useState(true);
+  const ref = useRef<HTMLInputElement>(null)
+  const form = useForm();
+
+  useEffect(() => {
+    form.setValidationHandler(ref, handleValidation, setIsValid);
+  }, [props.value]);
+
+  const handleValidation = () => {
+    if (!props.validationRules) {
+      return true;
+    }
+    
+    const isInputValid = props.validationRules?.find(validationRule => {
+      const isRegexRuleValid = validationRule.regex?.find(regexRule => {
+        const isRegexRuleValid = regexRule.test(props.value?.toString() || '');
+
+        if (!isRegexRuleValid) {
+          return true;
+        }
+      })
+      const isHandlerRuleValid = validationRule.handler?.find(handlerRule => {
+        const isHandlerRuleValid = handlerRule(props.value?.toString() || '')
+
+        if (!isHandlerRuleValid) {
+          return true;
+        }
+      })
+
+      if (!isHandlerRuleValid && !isRegexRuleValid) {
+        return true;
+      }
+    })
+
+    return !!isInputValid;
+  }
+
   return (
-    <input className={classes.input} type="text" {...props} />
+    <input ref={ref} type="text" {...props} className={clsx(classes.input, props.className, { invalid: !isValid })} />
   )
 }

@@ -4,8 +4,9 @@ import path from 'path';
 const nextConfig = {
   sassOptions: {
     includePaths: [path.join(process.cwd(), 'styles')],
-    prependData: `@import '/styles/utils'`, 
+    prependData: `@import '/styles/utils'`,
   },
+  reactStrictMode: false
 };
 
 export default nextConfig;

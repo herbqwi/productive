@@ -13,7 +13,7 @@ import Input from '../../input/input.component';
 
 const initTask: ITask = { title: '', description: '', priority: TaskPriority.MID, status: TaskStatus.TO_DO, deadlineType: TaskDeadline.SOFT_DEADLINE, intervals: [], isRecurring: false, labels: [] }
 
-const MODAL: Modal = Modal.NEW_TASK;
+const THIS_MODAL: Modal = Modal.NEW_TASK;
 
 export default function CreateTaskModal() {
   const modalContext = useModalContext();
@@ -25,7 +25,7 @@ export default function CreateTaskModal() {
   )
 
   useEffect(() => {
-    modalContext.addRefs(MODAL, modalRef);
+    modalContext.addRefs(THIS_MODAL, modalRef);
   }, [])
 
   useEffect(() => { // Reset the task to defaults
@@ -35,13 +35,13 @@ export default function CreateTaskModal() {
   }, [modalContext.modalsList])
 
   return (
-    <div className={clsx(classes.wrapper, { [classes.open]: modalContext.isModalOpened(MODAL) })}>
+    <div className={clsx(classes.wrapper, { [classes.open]: modalContext.isModalOpen(THIS_MODAL) })}>
       <div ref={modalRef} className={classes.modal}>
         <div className={classes.header}>
           <div className={classes['icon-wrapper']}>
             <Pencil size={20} weight='fill' />
           </div>
-          <Input
+          <input
             className={classes.title}
             value={task.title}
             onChange={(e) => { updateTask({ title: e.target.value }) }}
@@ -49,7 +49,7 @@ export default function CreateTaskModal() {
             placeholder='Task name'
             type="text"
           />
-          <button onClick={() => { modalContext.removeModalsAbove(MODAL) }}><X size={18} /></button>
+          <button onClick={() => { modalContext.removeModalsAbove(THIS_MODAL) }}><X size={18} /></button>
         </div>
         <textarea className={classes.description} value={task.description} onChange={(e) => { updateTask({ description: e.target.value }) }} placeholder='Task Description'></textarea>
         <ModalField
