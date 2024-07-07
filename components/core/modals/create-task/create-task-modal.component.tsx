@@ -25,7 +25,7 @@ export default function CreateTaskModal() {
   )
 
   useEffect(() => {
-    modalContext.addRefs(THIS_MODAL, modalRef);
+    modalContext.addRefs(THIS_MODAL, modalRef, 'modal');
   }, [])
 
   useEffect(() => { // Reset the task to defaults

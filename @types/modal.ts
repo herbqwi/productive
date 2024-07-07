@@ -5,10 +5,12 @@ export interface IModalContext {
   modalsList: Modal[]
   isModalOpen: (modal: Modal) => boolean
   removeModalsAbove: (modal: Modal) => void;
-  addRefs: (modal: Modal, ref: RefObject<HTMLElement>) => void
+  addRefs: (modal: Modal, ref: RefObject<HTMLElement>, refType: "button" | "input" | "modal") => void
 }
 
 export enum Modal {
   NEW_TASK = 'New Task',
   DATE_PICKER = 'Date Picker'
 }
+
+export type IModalRefType = 'modal' | 'button' | 'input';

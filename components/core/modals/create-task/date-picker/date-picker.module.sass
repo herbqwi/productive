@@ -22,8 +22,22 @@ $cell-dimentions: 30px
   position: relative
   transition: .3s all
 
-@mixin dateInput()
-  @include textField--defaults()
+@mixin dateOutputButton()
+  @include button--defaults(1)
+  text-align: left
+  padding: 6px 10px
+  border-radius: 5px
+  width: 170px
+  cursor: pointer
+  font-size: 14px
+  transition: .15s all
+  background-color: rgba(0, 0, 0, 0.1)
+  color: gray
+  &:hover
+    background-color: rgb(30, 30, 30)
+
+@mixin dateOutputButton--dateSelected()
+  color: white
 
 @mixin datePicker()
   position: absolute
@@ -72,26 +86,17 @@ $cell-dimentions: 30px
 
 @mixin header()
   display: flex
-  justify-content: space-between
-  align-items: center
+  flex-direction: column
+  row-gap: 10px
   width: 100%
   color: white
   font-size: 15px
-
-@mixin header-updateDateBtn()
-  @include button--defaults(unset)
-  display: flex
-  justify-content: center
-  align-items: center
-  padding: 7px
-  width: 32px
-  aspect-ratio: 1
 
 @mixin header-inputForm()
   @include input--defaults()
   display: flex
   justify-content: space-between
-  width: 68%
+  width: 100%
   column-gap: 10px
   padding-block: 5px
   padding-inline: 7px
@@ -103,10 +108,7 @@ $cell-dimentions: 30px
   margin: 0
   background-color: transparent
   border-radius: 0
-  &:is(.date-input)
-    flex: 1.25
   &:is(.time-input)
-    flex: 1
     display: none
 
 @mixin header-inputForm--showTime-timeInput()
@@ -114,6 +116,29 @@ $cell-dimentions: 30px
 
 @mixin header-inputForm--showTime-border()
   display: block
+
+@mixin header-monthInfo()
+  display: flex
+  justify-content: space-between
+  align-items: center
+  width: 100%
+
+@mixin header-monthInfo-p()
+  font-weight: 500
+  margin-left: 10px
+
+@mixin header-monthInfo-actions()
+  display: flex
+  column-gap: 10px
+
+@mixin header-monthInfo-actions-updateDateBtn()
+  @include button--defaults(unset)
+  display: flex
+  justify-content: center
+  align-items: center
+  padding: 7px
+  width: 32px
+  aspect-ratio: 1
 
 @mixin datePicker-calendar()
   display: grid
@@ -139,7 +164,7 @@ $cell-dimentions: 30px
 @mixin datePicker-calendar-monthDay()
   color: white
   font-size: 14px
-  border-radius: 6px
+  border-radius: 3px
   aspect-ratio: 1
   transition: .25s all
   cursor: pointer
@@ -172,9 +197,12 @@ $cell-dimentions: 30px
 
 .wrapper
   @include wrapper()
-  & > .date-input
-    @include dateInput()
+  & > .date-output-btn
+    @include dateOutputButton()
+    &:is(.date-selected)
+      @include dateOutputButton--dateSelected()
   & > .date-picker
+    font-size: 14px
     @include datePicker()
     &:is(.open)
       @include datePicker--open()
@@ -192,8 +220,6 @@ $cell-dimentions: 30px
           @include datePicker-suggestions-button--selected()
     & > .header
       @include header()
-      & > button
-        @include header-updateDateBtn()
       & > .input-form
         @include header-inputForm()
         &:is(.show-time)
@@ -206,6 +232,14 @@ $cell-dimentions: 30px
         & > .border
           @include border-block--defaults()
           display: none
+      & > .month-info
+        @include header-monthInfo()
+        & > p
+          @include header-monthInfo-p()
+        & > .actions
+          @include header-monthInfo-actions()
+          & > button
+            @include header-monthInfo-actions-updateDateBtn()
     & > .calendar
       @include datePicker-calendar()
       & > p

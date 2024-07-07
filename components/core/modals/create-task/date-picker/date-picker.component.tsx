@@ -14,15 +14,13 @@ export default function DatePicker() {
 
   return (
     <div className={classes.wrapper}>
-      <input
-        ref={datePicker.inputRef}
-        className={classes['date-input']}
-        placeholder='Select a date'
-        type="text"
-        value={convertDateToString(datePicker.finalDateTime.value, `MMM d, yyyy${datePicker.currentTime.value ? ' h:mm a' : ''}`)}
-        onChange={(e) => { }}
-        onFocus={datePicker.openModal}
-      />
+      <button
+        ref={datePicker.buttonRef}
+        className={clsx(classes['date-output-btn'], { [classes['date-selected']]: !!datePicker.finalDateTime.value })}
+        onClick={datePicker.openModal}
+      >
+        <p>{datePicker.finalDateTime.value ? convertDateToString(datePicker.finalDateTime.value, `MMM d, yyyy${datePicker.currentTime.value ? ' h:mm a' : ''}`) : 'Select a date'}</p>
+      </button>
       {
         <div
           ref={datePicker.datePickerRef}
@@ -55,7 +53,6 @@ export default function DatePicker() {
             </button>
           </div>
           <div className={classes.header}>
-            <button aria-label='Previous month' title='Previous month' onClick={datePicker.prevMonthHandler}><CaretLeft size={17} weight='bold' /></button>
             {/*
             Bug (HIGH-PRIORITY):
             The following input forms doesn't submit automatically when having two inputs inside of it.
@@ -75,7 +72,13 @@ export default function DatePicker() {
               />
             </Form>
             {/* <p><span>{format(datePicker.currentDate.value, 'MMM')}</span> <span className={classes.year}>{format(datePicker.currentDate.value, 'yyyy')}</span></p> */}
-            <button aria-label='Next month' title='Next month' onClick={datePicker.nextMonthHandler}><CaretRight size={17} weight='bold' /></button>
+            <div className={classes['month-info']}>
+              <p>{convertDateToString(datePicker.viewportDate.value, 'MMM yyyy')}</p>
+              <div className={classes.actions}>
+                <button aria-label='Previous month' title='Previous month' onClick={datePicker.prevMonthHandler}><CaretLeft size={17} weight='bold' /></button>
+                <button aria-label='Next month' title='Next month' onClick={datePicker.nextMonthHandler}><CaretRight size={17} weight='bold' /></button>
+              </div>
+            </div>
           </div>
           <div className={classes.calendar}>
             {datePicker.headerDays.map(day => (

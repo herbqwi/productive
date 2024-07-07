@@ -19,7 +19,7 @@ export default function useDatePicker() {
   const [monthDays, setMonthDays] = useState<Date[]>([]);
   const [isShowTime, setIsShowTime] = useState(true);
   const datePickerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
   const headerDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
 
   const nextMonthHandler = () => (
@@ -99,8 +99,8 @@ export default function useDatePicker() {
 
 
   useEffect(() => {
-    modalContext.addRefs(THIS_MODAL, datePickerRef)
-    modalContext.addRefs(THIS_MODAL, inputRef)
+    modalContext.addRefs(THIS_MODAL, datePickerRef, 'modal')
+    modalContext.addRefs(THIS_MODAL, buttonRef, 'button')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -174,7 +174,7 @@ export default function useDatePicker() {
       toggle: toggleIsShowTime
     },
     datePickerRef,
-    inputRef,
+    buttonRef,
     nextMonthHandler,
     prevMonthHandler,
     inputFormHandler,

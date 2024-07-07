@@ -1,6 +1,6 @@
 'use client'
 import { useContext, createContext, useEffect, RefObject } from "react";
-import { IModalContext, Modal } from "@/@types/modal";
+import { IModalContext, IModalRefType, Modal } from "@/@types/modal";
 import { useMap } from "@uidotdev/usehooks";
 import useStack from "@/hooks/common/stack.hook";
 
@@ -22,9 +22,9 @@ export function ModalContextProvider({ children }: IProps) {
   const { stack: modals, addItem, removeItem, remove, top } = useStack<Modal>();
   const refsMap = useMap<Modal>()
 
-  const addRefs = (modal: Modal, ref: RefObject<HTMLElement>) => {
+  const addRefs = (modal: Modal, ref: RefObject<HTMLElement>, refType: IModalRefType) => {
     const prevRefs: RefObject<HTMLElement>[] = refsMap.get(modal) || [];
-    refsMap.set(modal, [...prevRefs, ref])
+    refsMap.set(modal, [...prevRefs, { ref, refType }])
   }
 
   const isModalOpen = (modal: Modal) => (
@@ -43,11 +43,11 @@ export function ModalContextProvider({ children }: IProps) {
         return
       }
 
-      const currentModalRefs: RefObject<HTMLDivElement>[] = refsMap.get(top);
+      const currentModalRefs: { ref: RefObject<HTMLDivElement>, refType: IModalRefType }[] = refsMap.get(top);
 
       if (currentModalRefs.length
-        && (currentModalRefs.every((currentModalRef: RefObject<HTMLDivElement>) => ((
-          currentModalRef.current != null && !(currentModalRef.current.contains(event.target as Node))
+        && (currentModalRefs.every((currentModalRef) => ((
+          currentModalRef.ref.current != null && !(currentModalRef.ref.current.contains(event.target as Node))
         ))))
       ) {
         remove()
