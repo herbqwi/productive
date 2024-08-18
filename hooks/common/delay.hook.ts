@@ -4,9 +4,7 @@ export default function useValueDelay(delay: number, delayOnFlag: boolean, value
   const [value, setValue] = useState(valueDep);
 
   useEffect(() => {
-    console.log({ valueDep, delayOnFlag });
     if (valueDep === delayOnFlag) {
-      console.log('equalll');
       setTimeout(() => {
         setValue(valueDep);
       }, delay);
@@ -14,10 +12,6 @@ export default function useValueDelay(delay: number, delayOnFlag: boolean, value
       setValue(valueDep)
     }
   }, [valueDep]);
-
-  useEffect(() => {
-    console.log('value: ', value);
-  }, [value])
 
   return value;
 }

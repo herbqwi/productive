@@ -2,7 +2,7 @@ import NavMenu from '@/components/core/nav-menu/nav-menu.component';
 import './globals.sass';
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import { ModalContextProvider } from '@/contexts/modal.context';
+import { ModalContextProvider } from '@/contexts/modal/modal.context';
 
 const nunito = Nunito({
   weight: ['200', '300', '400', '500', '700', '800', '900', '1000'],

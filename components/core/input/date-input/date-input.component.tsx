@@ -1,21 +1,27 @@
+import { convertDateToString } from '@/util/global.utils';
 import Input, { IInputProps } from '../input.component';
-import { format, isValid, toDate } from 'date-fns';
+import { isValid, toDate } from 'date-fns';
+import { forwardRef } from 'react';
 
-export default function DateInput(props: IInputProps) {
+const DateInput = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
   const validationHandler = (text: string) => (
     isValid(toDate(text)) || !text
   );
 
   return (
     <Input
+      ref={ref}
       {...props}
       type='text'
-      placeholder={format(new Date(), 'MMM d, yyyy')}
+      placeholder={convertDateToString(new Date(), 'MMM d, yyyy')}
       validationRules={[{
         handler: [validationHandler],
         errorMessage: 'Invalid date'
       }]}
       closestFormSubmit
     />
-  )
-}
+  );
+})
+DateInput.displayName = 'DateInput';
+
+export default DateInput;

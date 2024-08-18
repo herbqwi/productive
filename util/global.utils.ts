@@ -18,6 +18,10 @@ export const convertDateToString = (date?: Date, formatStr?: string) => (
   date ? format(date || new Date(), formatStr || 'MMM d, yyyy') : ''
 )
 
+/**
+ * Bug (HIGH-PRIORITY)
+ * This function doesn't support taking 24-hour as input yet. 
+ */
 export const parseTimeString = (timeString: string): ITime => {
   let [time, modifier] = timeString.split(' ');
   let [hours, minutes] = time.split(':').map(Number);
@@ -46,3 +50,15 @@ export const setTimeToDate = ({ date, timeString, time }: { date?: Date, timeStr
   newDate = setSeconds(newDate, 0);
   return newDate;
 };
+
+export function mergeRefs<T>(...refs: React.Ref<T>[]): React.RefCallback<T> {
+  return (value: T) => {
+    refs.forEach(ref => {
+      if (typeof ref === 'function') {
+        ref(value);
+      } else if (ref) {
+        (ref as React.MutableRefObject<T>).current = value;
+      }
+    });
+  };
+}

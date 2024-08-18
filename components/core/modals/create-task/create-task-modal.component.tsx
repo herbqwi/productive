@@ -3,13 +3,13 @@ import clsx from 'clsx';
 import { ITask, TaskDeadline, TaskPriority, TaskStatus } from '@/@types/tasks';
 import { Modal } from '@/@types/modal';
 import { useEffect, useRef, useState } from 'react';
-import { useModalContext } from '@/contexts/modal.context'
 
 import { Alarm, BoxingGlove, Calendar, CheckCircle, Clock, ExclamationMark, Flag, FlagPennant, HourglassSimple, Pencil, X } from '@phosphor-icons/react/dist/ssr';
 import ModalField from './modal-field/modal-field.component';
 import OptionSelector from './option-selector/option-selector.component';
 import DatePicker from './date-picker/date-picker.component';
-import Input from '../../input/input.component';
+import Form from '../../form/form.context';
+import { useModalContext } from '@/contexts/modal/modal.context';
 
 const initTask: ITask = { title: '', description: '', priority: TaskPriority.MID, status: TaskStatus.TO_DO, deadlineType: TaskDeadline.SOFT_DEADLINE, intervals: [], isRecurring: false, labels: [] }
 
@@ -19,6 +19,7 @@ export default function CreateTaskModal() {
   const modalContext = useModalContext();
   const [task, setTask] = useState<ITask>(initTask);
   const modalRef = useRef<HTMLDivElement>(null);
+  const autoFocusRef = useRef<HTMLInputElement>(null);
 
   const updateTask = (newTask: Partial<ITask>) => (
     setTask(prevTask => ({ ...prevTask, ...newTask }))
@@ -26,6 +27,7 @@ export default function CreateTaskModal() {
 
   useEffect(() => {
     modalContext.addRefs(THIS_MODAL, modalRef, 'modal');
+    modalContext.addRefs(THIS_MODAL, autoFocusRef, 'auto-focus');
   }, [])
 
   useEffect(() => { // Reset the task to defaults
@@ -35,7 +37,7 @@ export default function CreateTaskModal() {
   }, [modalContext.modalsList])
 
   return (
-    <div className={clsx(classes.wrapper, { [classes.open]: modalContext.isModalOpen(THIS_MODAL) })}>
+    <Form className={clsx(classes.wrapper, { [classes.open]: modalContext.isModalOpen(THIS_MODAL) })}>
       <div ref={modalRef} className={classes.modal}>
         <div className={classes.header}>
           <div className={classes['icon-wrapper']}>
@@ -43,9 +45,9 @@ export default function CreateTaskModal() {
           </div>
           <input
             className={classes.title}
+            ref={autoFocusRef}
             value={task.title}
             onChange={(e) => { updateTask({ title: e.target.value }) }}
-            autoFocus
             placeholder='Task name'
             type="text"
           />
@@ -104,6 +106,6 @@ export default function CreateTaskModal() {
           />
         </ModalField>
       </div>
-    </div>
+    </Form>
   )
 }

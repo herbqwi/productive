@@ -1,6 +1,8 @@
-import { parseTimeString, setTimeToDate } from '@/util/global.utils';
+import { convertDateToString, parseTimeString, setTimeToDate } from '@/util/global.utils';
 import Input, { IInputProps } from '../input.component';
-import { isValid, toDate } from 'date-fns';
+import { getSeconds, isValid } from 'date-fns';
+import { useEffect, useState } from 'react';
+import useClock from '@/hooks/common/clock.hook';
 
 export interface ITime {
   hours: number;
@@ -8,6 +10,8 @@ export interface ITime {
 }
 
 export default function TimeInput(props: IInputProps) {
+  const clock = useClock();
+
   const validationHandler = (text: string) => {
     const date = setTimeToDate({ date: new Date(), time: parseTimeString(text) });
     return isValid(date) || !text
@@ -17,8 +21,7 @@ export default function TimeInput(props: IInputProps) {
     <Input
       {...props}
       type='text'
-      placeholder='00:00 AM'
-      onSubmit={() => { console.log('test') }}
+      placeholder={convertDateToString(clock, 'hh:mm a')}
       validationRules={[{
         handler: [validationHandler],
         errorMessage: 'Invalid date'

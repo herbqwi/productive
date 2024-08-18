@@ -1,10 +1,13 @@
 'use client'
+
+import classes from './modal.module.sass';
 import { useContext, createContext, useEffect, RefObject } from "react";
 import { IModalContext, IModalRefType, Modal } from "@/@types/modal";
 import { useMap } from "@uidotdev/usehooks";
 import useStack from "@/hooks/common/stack.hook";
 
 import CreateTaskModal from "@/components/core/modals/create-task/create-task-modal.component";
+import clsx from 'clsx';
 
 const ModalContext = createContext<IModalContext>(null as any);
 
@@ -38,6 +41,27 @@ export function ModalContextProvider({ children }: IProps) {
   }
 
   useEffect(() => {
+    /**
+       * Bug (MID-PRIORITY):
+       * When the user has multiple modals opened (For example DatePicker inside of CreateTaskModal), when clicking outside the
+       * most-inner modal, the input in the modal that comes after it gets focused.
+       * This shouldn't be the normal behavior, and the input should get focused only when opened for the first time.
+     */
+    const handleAutoFocus = () => {
+      if (!top) {
+        return
+      }
+
+      const currentModalRefs: { ref: RefObject<HTMLDivElement>, refType: IModalRefType }[] = refsMap.get(top);
+      const autoFocusModalRefs = currentModalRefs.filter(currentModalRef => currentModalRef.refType === 'auto-focus')
+
+      autoFocusModalRefs.forEach(autoFocusModalRef => {
+        setTimeout(() => (
+          autoFocusModalRef.ref.current?.focus()
+        ), 10);
+      })
+    }
+
     const handleClickOutside = (event: MouseEvent) => {
       if (!top) {
         return
@@ -62,6 +86,7 @@ export function ModalContextProvider({ children }: IProps) {
 
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleKeyDown);
+    handleAutoFocus();
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -77,8 +102,11 @@ export function ModalContextProvider({ children }: IProps) {
       removeModalsAbove,
       addRefs
     }}>
+      {/* Top-level modals are put here */}
       <CreateTaskModal />
-      {children}
+      <div className={clsx(classes.wrapper, { [classes.blurred]: modals.length })}>
+        {children}
+      </div>
     </ModalContext.Provider>
   )
 }

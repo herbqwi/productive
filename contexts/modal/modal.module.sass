@@ -1,0 +1,10 @@
+@mixin wrapper()
+  transition: .2s filter
+
+@mixin wrapper--blurred()
+  filter: blur(2px)
+
+.wrapper
+  @include wrapper()
+  &:is(.blurred)
+    @include wrapper--blurred()

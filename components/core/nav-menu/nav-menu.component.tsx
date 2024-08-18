@@ -5,8 +5,8 @@ import clsx from 'clsx';
 import useNavMenu from '@/hooks/core/nav-menu/nav-menu.hook';
 
 import MenuHeader from './menu-header/menu-header.component';
-import { useModalContext } from '@/contexts/modal.context';
 import { Modal } from '@/@types/modal';
+import { useModalContext } from '@/contexts/modal/modal.context';
 
 const NavMenu = () => {
   const navMenu = useNavMenu();

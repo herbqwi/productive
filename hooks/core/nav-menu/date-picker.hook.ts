@@ -1,14 +1,17 @@
 import { Modal } from "@/@types/modal";
 import { addMonths, format, startOfMonth, startOfWeek, subMonths, endOfMonth, endOfWeek, addDays, toDate, setYear, isDate, isValid, formatDate } from "date-fns";
-import { useModalContext } from "@/contexts/modal.context";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import { setTimeToDate, convertDateToString, parseTimeString } from "@/util/global.utils";
-import useValueDelay from "@/hooks/common/delay.hook";
 import { ITime } from "@/components/core/input/time-input/time-input.component";
+import { useForm } from "@/components/core/form/form.context";
+import { IDatePickerProps } from "@/components/core/modals/create-task/date-picker/date-picker.component";
+import useWatch from "@/hooks/common/watch.hook";
+import { useModalContext } from "@/contexts/modal/modal.context";
 
 const THIS_MODAL = Modal.DATE_PICKER;
 
-export default function useDatePicker() {
+export default function useDatePicker(props: IDatePickerProps) {
+  const form = useForm();
   const modalContext = useModalContext();
   const [dateInputValue, setDateInputValue] = useState('');
   const [timeInputValue, setTimeInputValue] = useState('');
@@ -20,7 +23,15 @@ export default function useDatePicker() {
   const [isShowTime, setIsShowTime] = useState(true);
   const datePickerRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const autoFocusRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const headerDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+
+  const dateWatcher = useWatch('date');
+
+  useEffect(() => {
+    console.log({ dateWatcher });
+  }, [dateWatcher])
 
   const nextMonthHandler = () => (
     setViewportDate(addMonths(viewportDate, 1))
@@ -35,9 +46,7 @@ export default function useDatePicker() {
   )
 
   // Fix this
-  const inputFormHandler = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const inputFormHandler = () => {
     if (timeInputValue) {
       const time = parseTimeString(timeInputValue);
       setCurrentTime(time);
@@ -97,10 +106,14 @@ export default function useDatePicker() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modalContext, modalContext.modalsList])
 
+  useEffect(() => {
+    form.updateFormItem({ ref: formRef, name: props.name });
+  }, [finalDateTime]);
 
   useEffect(() => {
     modalContext.addRefs(THIS_MODAL, datePickerRef, 'modal')
     modalContext.addRefs(THIS_MODAL, buttonRef, 'button')
+    modalContext.addRefs(THIS_MODAL, autoFocusRef, 'auto-focus')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -133,10 +146,6 @@ export default function useDatePicker() {
     setCurrentTime(undefined);
     setTimeInputValue('');
   }, [isShowTime])
-
-  useEffect(() => {
-    console.log('Current date: ', currentDate);
-  }, [currentDate])
 
   return {
     modalContext,
@@ -175,6 +184,8 @@ export default function useDatePicker() {
     },
     datePickerRef,
     buttonRef,
+    autoFocusRef,
+    formRef,
     nextMonthHandler,
     prevMonthHandler,
     inputFormHandler,

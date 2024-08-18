@@ -5,7 +5,7 @@ export interface IModalContext {
   modalsList: Modal[]
   isModalOpen: (modal: Modal) => boolean
   removeModalsAbove: (modal: Modal) => void;
-  addRefs: (modal: Modal, ref: RefObject<HTMLElement>, refType: "button" | "input" | "modal") => void
+  addRefs: (modal: Modal, ref: RefObject<HTMLElement>, refType: IModalRefType) => void
 }
 
 export enum Modal {
@@ -13,4 +13,4 @@ export enum Modal {
   DATE_PICKER = 'Date Picker'
 }
 
-export type IModalRefType = 'modal' | 'button' | 'input';
+export type IModalRefType = 'modal' | 'button' | 'input' | 'auto-focus';

@@ -1,11 +1,12 @@
-import { InputHTMLAttributes, useEffect, useRef, useState } from 'react';
+import { forwardRef, InputHTMLAttributes, useEffect, useRef, useState } from 'react';
 import classes from './input.module.sass'
 import clsx from 'clsx';
-import { useForm } from '../form/form.component';
+import { IFormProps, useForm } from '../form/form.context';
+import { mergeRefs } from '@/util/global.utils';
 
 type HTMLInputProps = InputHTMLAttributes<HTMLInputElement>;
 
-export type IInputProps = HTMLInputProps & {
+export type IInputProps = IFormProps & HTMLInputProps & {
   validationRules?: {
     regex?: RegExp[];
     handler?: ((text: string) => boolean)[];
@@ -14,30 +15,31 @@ export type IInputProps = HTMLInputProps & {
   closestFormSubmit?: boolean
 }
 
-export default function Input(props: IInputProps) {
+const Input = forwardRef<HTMLInputElement, IInputProps>(({ validationRules, closestFormSubmit, name, ...inputProps }, ref2) => {
+  const props = { validationRules, closestFormSubmit, name };
   const [isValid, setIsValid] = useState(true);
   const ref = useRef<HTMLInputElement>(null)
-  const form = useForm();
+  const form = useForm(ref);
 
   useEffect(() => {
-    form.setValidationHandler(ref, handleValidation, setIsValid);
-  }, [props.value]);
+    form.updateFormItem({ ref, name: props.name, validationHandler, setIsValid });
+  }, [inputProps.value]);
 
-  const handleValidation = () => {
+  const validationHandler = () => {
     if (!props.validationRules) {
       return true;
     }
 
     const isInputValid = props.validationRules?.find(validationRule => {
       const isRegexRuleValid = validationRule.regex?.find(regexRule => {
-        const isRegexRuleValid = regexRule.test(props.value?.toString() || '');
+        const isRegexRuleValid = regexRule.test(inputProps.value?.toString() || '');
 
         if (!isRegexRuleValid) {
           return true;
         }
       })
       const isHandlerRuleValid = validationRule.handler?.find(handlerRule => {
-        const isHandlerRuleValid = handlerRule(props.value?.toString() || '')
+        const isHandlerRuleValid = handlerRule(inputProps.value?.toString() || '')
 
         if (!isHandlerRuleValid) {
           return true;
@@ -55,7 +57,7 @@ export default function Input(props: IInputProps) {
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      const form = e.currentTarget.closest('form');
+      const form = e.currentTarget.closest('.form')
       if (form) {
         form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
       }
@@ -63,6 +65,16 @@ export default function Input(props: IInputProps) {
   };
 
   return (
-    <input ref={ref} type="text" {...props} className={clsx(classes.input, props.className, { invalid: !isValid })} {...(props.closestFormSubmit && { onKeyDown: handleKeyPress })} />
+    <input
+      ref={mergeRefs(ref, ref2)}
+      type="text"
+      {...inputProps}
+      className={clsx(classes.input, inputProps.className, { invalid: !isValid })} {...(props.closestFormSubmit && { onKeyDown: handleKeyPress })}
+      value={form.getValue() || ''}
+      onChange={(e) => form.setValue(e.target.value)}
+    />
   )
-}
+})
+
+Input.displayName = 'Input';
+export default Input;

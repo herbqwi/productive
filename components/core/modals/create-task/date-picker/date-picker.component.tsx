@@ -5,15 +5,17 @@ import { convertDateToString, isDatesEqual } from '@/util/global.utils';
 import useDatePicker from '@/hooks/core/nav-menu/date-picker.hook';
 
 import { CaretLeft, CaretRight, Timer } from '@phosphor-icons/react/dist/ssr';
-import Form from '@/components/core/form/form.component';
 import DateInput from '@/components/core/input/date-input/date-input.component';
 import TimeInput from '@/components/core/input/time-input/time-input.component';
+import Form, { IFormProps } from '@/components/core/form/form.context';
 
-export default function DatePicker() {
-  const datePicker = useDatePicker();
+export type IDatePickerProps = IFormProps;
+
+export default function DatePicker(props: IDatePickerProps) {
+  const datePicker = useDatePicker(props);
 
   return (
-    <div className={classes.wrapper}>
+    <div ref={datePicker.formRef} className={classes.wrapper}>
       <button
         ref={datePicker.buttonRef}
         className={clsx(classes['date-output-btn'], { [classes['date-selected']]: !!datePicker.finalDateTime.value })}
@@ -60,15 +62,16 @@ export default function DatePicker() {
             */}
             <Form className={clsx(classes['input-form'], { [classes['show-time']]: datePicker.isShowTime.value })} onSubmit={datePicker.inputFormHandler}>
               <DateInput
+                name='date'
+                ref={datePicker.autoFocusRef}
                 className={classes['date-input']}
                 value={datePicker.dateInputValue.value}
-                onChange={(e) => { datePicker.dateInputValue.set(e.target.value) }}
               />
               <div className={classes.border} />
               <TimeInput
+                name='time'
                 className={classes['time-input']}
                 value={datePicker.timeInputValue.value}
-                onChange={(e) => { datePicker.timeInputValue.set(e.target.value) }}
               />
             </Form>
             {/* <p><span>{format(datePicker.currentDate.value, 'MMM')}</span> <span className={classes.year}>{format(datePicker.currentDate.value, 'yyyy')}</span></p> */}
