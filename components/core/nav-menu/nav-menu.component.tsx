@@ -2,11 +2,11 @@
 
 import classes from './nav-menu.module.sass'
 import clsx from 'clsx';
+import { Modal } from '@/@types/modal';
 import useNavMenu from '@/hooks/core/nav-menu/nav-menu.hook';
+import { useModalContext } from '@/contexts/modal/modal.context';
 
 import MenuHeader from './menu-header/menu-header.component';
-import { Modal } from '@/@types/modal';
-import { useModalContext } from '@/contexts/modal/modal.context';
 
 const NavMenu = () => {
   const navMenu = useNavMenu();

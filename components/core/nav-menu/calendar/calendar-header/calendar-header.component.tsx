@@ -1,8 +1,8 @@
 import classes from './calendar-header.module.sass'
 import { format } from 'date-fns';
+import { IState } from '@/@types/global';
 
 import { CaretLeft, CaretRight } from '@phosphor-icons/react/dist/ssr'
-import { IState } from '@/@types/global';
 
 interface IProps {
   currentDate: IState<Date>;

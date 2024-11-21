@@ -1,7 +1,8 @@
-import { convertDateToString } from '@/util/global.utils';
-import Input, { IInputProps } from '../input.component';
-import { isValid, toDate } from 'date-fns';
 import { forwardRef } from 'react';
+import { isValid, toDate } from 'date-fns';
+import { convertDateToString } from '@/util/global.utils';
+
+import Input, { IInputProps } from '../input.component';
 
 const DateInput = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
   const validationHandler = (text: string) => (

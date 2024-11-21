@@ -1,5 +1,5 @@
-import { forwardRef, InputHTMLAttributes, useEffect, useRef, useState } from 'react';
 import classes from './input.module.sass'
+import { forwardRef, InputHTMLAttributes, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { IFormProps, useForm } from '../form/form.context';
 import { mergeRefs } from '@/util/global.utils';
@@ -57,10 +57,7 @@ const Input = forwardRef<HTMLInputElement, IInputProps>(({ validationRules, clos
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       e.preventDefault();
-      const form = e.currentTarget.closest('.form')
-      if (form) {
-        form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-      }
+      form.submitHandler()
     }
   };
 

@@ -1,10 +1,11 @@
+import React, { Dispatch, HTMLAttributes, RefObject, SetStateAction, useContext, useRef } from "react";
 import { IMap, useMap } from "@/hooks/common/map.hook";
 import clsx from "clsx";
-import React, { Dispatch, FormEvent, FormHTMLAttributes, HTMLAttributes, RefObject, SetStateAction, useContext, useEffect } from "react";
 
-type DivProps = HTMLAttributes<HTMLDivElement>;
-type IProps = DivProps & {
-  onSubmit?: () => void
+type FormProps = HTMLAttributes<HTMLFormElement>;
+type IProps = FormProps & {
+  onSubmit?: () => void;
+  submitOnEnter?: boolean;
 };
 
 interface IFormContext {
@@ -13,7 +14,8 @@ interface IFormContext {
   subscribeToListener: (name: string, listenerHandler: (name?: string) => void) => void
   getValue: (ref: RefObject<HTMLElement>) => string | undefined;
   setValue: (ref: RefObject<HTMLElement>, value: any) => void;
-  formItems: IMap<RefObject<HTMLElement>, IFormItemProps>
+  formItems: IMap<RefObject<HTMLElement>, IFormItemProps>;
+  submitHandler: () => void;
 }
 
 interface IFormItemProps {
@@ -33,7 +35,7 @@ type IUseForm<T> = T extends RefObject<HTMLElement>
   ? Omit<IFormContext, 'getValue' | 'setValue'> & { getValue: () => string | undefined; setValue: (value: any) => void }
   : IFormContext;
 
-const FormContext = React.createContext<IFormContext>({ updateFormItem: () => { }, resetAllFields: () => { }, getValue: () => undefined, setValue: () => { }, subscribeToListener: () => { }, formItems: {} as any });
+const FormContext = React.createContext<IFormContext>({ updateFormItem: () => { }, resetAllFields: () => { }, getValue: () => undefined, setValue: () => { }, subscribeToListener: () => { }, formItems: {} as any, submitHandler: () => { } });
 
 export const useForm = <T extends RefObject<HTMLElement> | undefined>(ref?: T): IUseForm<T> => {
   const formContext = useContext(FormContext);
@@ -51,6 +53,7 @@ export const useForm = <T extends RefObject<HTMLElement> | undefined>(ref?: T): 
 
 export default function Form(props: IProps) {
   const formItems = useMap<RefObject<HTMLElement>, IFormItemProps>();
+  const formRef = useRef<HTMLFormElement>(null)
 
   const updateFormItem = ({ ref, validationHandler, setIsValid, resetHandler, subscriberHandlers, name, value }: { ref: RefObject<HTMLElement> } & IFormItemProps) => {
     const prevValues = formItems.get(ref) || {};
@@ -67,8 +70,6 @@ export default function Form(props: IProps) {
 
   const getItemFromName = (name: string) => (
     Array.from(formItems.map.entries()).find(([key, value]) => {
-      console.log('value.name: ', value.name);
-      console.log('name: ', name);
       if (value.name === name) {
         return key;
       }
@@ -76,11 +77,7 @@ export default function Form(props: IProps) {
   )
 
   const subscribeToListener = (name: string, listenerHandler: (name?: string) => void) => {
-    console.log('New subscribe to this form from ', name);
-    console.log('new sub: formItems.map', formItems.map);
     const ref = getItemFromName(name);
-
-    console.log('subscribe ref: ', ref);
 
     if (!ref) {
       return;
@@ -125,13 +122,16 @@ export default function Form(props: IProps) {
     const isAllFieldsValid = validateAllFields();
 
     if (isAllFieldsValid) {
+      console.log('all fields are valid!')
       props.onSubmit();
+    } else {
+      console.log('Some fields are not valid')
     }
   }
 
-  return <FormContext.Provider value={{ updateFormItem, resetAllFields, subscribeToListener, getValue, setValue, formItems }}>
-    <div onSubmit={submitHandler} {...props} className={clsx(props.className, 'form')}>
+  return <FormContext.Provider value={{ updateFormItem, resetAllFields, subscribeToListener, getValue, setValue, formItems, submitHandler }}>
+    <form ref={formRef} onSubmit={submitHandler} {...props} className={clsx(props.className, 'form')}>
       {props.children}
-    </div>
+    </form>
   </FormContext.Provider>
 }

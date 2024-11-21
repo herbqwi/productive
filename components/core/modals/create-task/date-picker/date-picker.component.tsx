@@ -1,6 +1,6 @@
 import clsx from 'clsx';
-import classes from './date-picker.module.sass'
 import { addDays, format } from 'date-fns';
+import classes from './date-picker.module.sass'
 import { convertDateToString, isDatesEqual } from '@/util/global.utils';
 import useDatePicker from '@/hooks/core/nav-menu/date-picker.hook';
 
@@ -20,6 +20,7 @@ export default function DatePicker(props: IDatePickerProps) {
         ref={datePicker.buttonRef}
         className={clsx(classes['date-output-btn'], { [classes['date-selected']]: !!datePicker.finalDateTime.value })}
         onClick={datePicker.openModal}
+        type='button'
       >
         <p>{datePicker.finalDateTime.value ? convertDateToString(datePicker.finalDateTime.value, `MMM d, yyyy${datePicker.currentTime.value ? ' h:mm a' : ''}`) : 'Select a date'}</p>
       </button>

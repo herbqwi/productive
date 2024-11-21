@@ -47,6 +47,7 @@ export default function useDatePicker(props: IDatePickerProps) {
 
   // Fix this
   const inputFormHandler = () => {
+    console.log('dateWatcher: ', dateWatcher);
     if (timeInputValue) {
       const time = parseTimeString(timeInputValue);
       setCurrentTime(time);

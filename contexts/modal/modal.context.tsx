@@ -4,10 +4,10 @@ import classes from './modal.module.sass';
 import { useContext, createContext, useEffect, RefObject } from "react";
 import { IModalContext, IModalRefType, Modal } from "@/@types/modal";
 import { useMap } from "@uidotdev/usehooks";
+import clsx from 'clsx';
 import useStack from "@/hooks/common/stack.hook";
 
 import CreateTaskModal from "@/components/core/modals/create-task/create-task-modal.component";
-import clsx from 'clsx';
 
 const ModalContext = createContext<IModalContext>(null as any);
 

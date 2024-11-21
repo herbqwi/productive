@@ -1,5 +1,5 @@
-import { getSeconds } from "date-fns";
 import { useEffect, useState } from "react";
+import { getSeconds } from "date-fns";
 
 
 export default function useClock() {

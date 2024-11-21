@@ -3,13 +3,13 @@ import clsx from 'clsx';
 import { ITask, TaskDeadline, TaskPriority, TaskStatus } from '@/@types/tasks';
 import { Modal } from '@/@types/modal';
 import { useEffect, useRef, useState } from 'react';
+import { useModalContext } from '@/contexts/modal/modal.context';
 
 import { Alarm, BoxingGlove, Calendar, CheckCircle, Clock, ExclamationMark, Flag, FlagPennant, HourglassSimple, Pencil, X } from '@phosphor-icons/react/dist/ssr';
 import ModalField from './modal-field/modal-field.component';
 import OptionSelector from './option-selector/option-selector.component';
 import DatePicker from './date-picker/date-picker.component';
 import Form from '../../form/form.context';
-import { useModalContext } from '@/contexts/modal/modal.context';
 
 const initTask: ITask = { title: '', description: '', priority: TaskPriority.MID, status: TaskStatus.TO_DO, deadlineType: TaskDeadline.SOFT_DEADLINE, intervals: [], isRecurring: false, labels: [] }
 

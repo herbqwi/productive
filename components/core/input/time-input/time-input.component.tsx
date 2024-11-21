@@ -1,8 +1,8 @@
+import { isValid } from 'date-fns';
 import { convertDateToString, parseTimeString, setTimeToDate } from '@/util/global.utils';
-import Input, { IInputProps } from '../input.component';
-import { getSeconds, isValid } from 'date-fns';
-import { useEffect, useState } from 'react';
 import useClock from '@/hooks/common/clock.hook';
+
+import Input, { IInputProps } from '../input.component';
 
 export interface ITime {
   hours: number;

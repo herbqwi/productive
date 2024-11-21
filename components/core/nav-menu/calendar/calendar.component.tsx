@@ -3,11 +3,11 @@
 import classes from './calendar.module.sass'
 import clsx from 'clsx';
 import { IStateToggle } from '@/@types/global';
-import { format, isAfter, isBefore, isEqual, isMatch, isToday, isWithinInterval } from 'date-fns';
+import { format, isAfter, isBefore, isToday } from 'date-fns';
+import { isDatesEqual } from '@/util/global.utils';
 import useCalendar from '@/hooks/core/nav-menu/calendar.hook';
 
 import CalendarHeader from './calendar-header/calendar-header.component';
-import { isDatesEqual } from '@/util/global.utils';
 
 export interface ICalendarProps {
   open: IStateToggle<boolean>;

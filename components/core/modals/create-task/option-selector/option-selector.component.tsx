@@ -1,5 +1,5 @@
-import React from 'react';
 import classes from './option-selector.module.sass'
+import React from 'react';
 import clsx from 'clsx';
 
 interface IProps<T> {
