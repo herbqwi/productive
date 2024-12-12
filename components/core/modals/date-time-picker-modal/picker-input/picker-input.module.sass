@@ -1,0 +1,27 @@
+@mixin wrapper()
+  position: relative
+  transition: .3s all
+
+@mixin dateOutputButton()
+  @include button--defaults(1)
+  text-align: left
+  padding: 6px 10px
+  border-radius: 5px
+  width: 170px
+  cursor: pointer
+  font-size: 14px
+  transition: .15s all
+  background-color: rgba(0, 0, 0, 0.1)
+  color: gray
+  &:hover
+    background-color: rgb(30, 30, 30)
+
+@mixin dateOutputButton--dateSelected()
+  color: white
+
+.wrapper
+  @include wrapper()
+  & > .date-output-btn
+    @include dateOutputButton()
+    &:is(.date-selected)
+      @include dateOutputButton--dateSelected()

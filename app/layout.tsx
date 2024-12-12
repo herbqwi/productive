@@ -2,7 +2,8 @@ import NavMenu from '@/components/core/nav-menu/nav-menu.component';
 import './globals.sass';
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
-import { ModalContextProvider } from '@/contexts/modal/modal.context';
+import ModalWrapper from '@/components/core/modals/modal-wrapper/modal-wrapper.component';
+import { ModalUtilsConfigurator } from '@/util/modal.util';
 
 const nunito = Nunito({
   weight: ['200', '300', '400', '500', '700', '800', '900', '1000'],
@@ -23,10 +24,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={nunito.className}>
-        <ModalContextProvider>
-          <NavMenu />
-          {children}
-        </ModalContextProvider>
+        <ModalWrapper />
+        <ModalUtilsConfigurator />
+        <NavMenu />
+        {children}
       </body>
     </html>
   );

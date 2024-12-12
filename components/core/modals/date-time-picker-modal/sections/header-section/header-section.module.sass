@@ -1,0 +1,78 @@
+@mixin wrapper()
+  display: flex
+  flex-direction: column
+  row-gap: 10px
+  width: 100%
+  color: white
+  font-size: 15px
+
+@mixin header-inputForm()
+  @include input--defaults()
+  display: flex
+  justify-content: space-between
+  width: 100%
+  column-gap: 10px
+  padding-block: 5px
+  padding-inline: 7px
+  &:has(:global(.invalid)) > input
+    border-color: transparent
+
+@mixin header-inputForm-input()
+  padding: 0
+  margin: 0
+  background-color: transparent
+  border-radius: 0
+  &:is(.time-input)
+    display: none
+
+@mixin header-inputForm--showTime-timeInput()
+  display: block
+
+@mixin header-inputForm--showTime-border()
+  display: block
+
+@mixin header-monthInfo()
+  display: flex
+  justify-content: space-between
+  align-items: center
+  width: 100%
+
+@mixin header-monthInfo-p()
+  font-weight: 500
+  margin-left: 10px
+
+@mixin header-monthInfo-actions()
+  display: flex
+  column-gap: 10px
+
+@mixin header-monthInfo-actions-updateDateBtn()
+  @include button--defaults(unset)
+  display: flex
+  justify-content: center
+  align-items: center
+  padding: 7px
+  width: 32px
+  aspect-ratio: 1
+
+.wrapper
+  @include wrapper()
+  & > .input-form
+    @include header-inputForm()
+    &:is(.show-time)
+      & > .time-input
+        @include header-inputForm--showTime-timeInput()
+      & > .border
+        @include header-inputForm--showTime-border()
+    & > input
+      @include header-inputForm-input()
+    & > .border
+      @include border-block--defaults()
+      display: none
+  & > .month-info
+    @include header-monthInfo()
+    & > p
+      @include header-monthInfo-p()
+    & > .actions
+      @include header-monthInfo-actions()
+      & > button
+        @include header-monthInfo-actions-updateDateBtn()

@@ -1,0 +1,21 @@
+@mixin button()
+  display: flex
+  justify-content: center
+  align-items: center
+  column-gap: 10px
+  &:has(:global(.keyboard-shortcut))
+    padding: 5px
+    padding-left: 10px
+
+@mixin button-default()
+  @include button--defaults()
+
+@mixin button-main()
+  @include button--defaults-main()
+
+.button
+  &:is(.button-default)
+    @include button-default()
+  &:is(.button-main)
+    @include button-main()
+  @include button()

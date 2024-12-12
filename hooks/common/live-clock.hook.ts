@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { getSeconds } from "date-fns";
 
 
-export default function useClock() {
+export default function useLiveClock() {
   const [clock, setClock] = useState(new Date());
 
   const updateClock = () => {

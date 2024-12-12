@@ -1,0 +1,35 @@
+@mixin wrapper()
+  display: flex
+  justify-content: center
+  align-items: stretch
+  column-gap: 10px
+  padding-bottom: 12px
+  margin-bottom: 12px
+  border-bottom: 1px solid rgb(45, 48, 56)
+  font-size: 13px
+
+@mixin button()
+  @include button--defaults(1)
+  flex: 1
+
+@mixin button--selected()
+  background-color: rgba(224, 123, 95, 0.15)
+
+@mixin timeButton()
+  padding-block: 0
+  & > svg
+    display: flex
+
+@mixin timeButton--active()
+  background-color: rgba(224, 123, 95, 0.15)
+
+.wrapper
+  @include wrapper()
+  & > button
+    @include button()
+    &:is(.time)
+      @include timeButton()
+      &:is(.active)
+        @include timeButton--active()
+    &:is(.selected)
+      @include button--selected()

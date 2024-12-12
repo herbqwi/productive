@@ -1,5 +1,5 @@
 import { IUserSettings } from "@/@types/user-settings";
-import { DeepPartial } from "@/@types/utils";
+import { DeepPartial } from "@/@types/utils.types";
 import merge from 'lodash/merge';
 
 const initUserSettings: IUserSettings = {

@@ -1,28 +1,34 @@
-import { forwardRef } from 'react';
-import { isValid, toDate } from 'date-fns';
-import { convertDateToString } from '@/util/global.utils';
+import { InputHTMLAttributes, KeyboardEvent } from "react";
+import dayjs from "dayjs";
+import { useDateTimePickerStore } from "@/stores";
 
-import Input, { IInputProps } from '../input.component';
+import Input from "../input.component";
+import clsx from "clsx";
 
-const DateInput = forwardRef<HTMLInputElement, IInputProps>((props, ref) => {
-  const validationHandler = (text: string) => (
-    isValid(toDate(text)) || !text
-  );
+type HTMLInputProps = InputHTMLAttributes<HTMLInputElement>;
+
+interface IProps extends HTMLInputProps {
+  value: string;
+}
+
+export default function DateInput(props: IProps) {
+  const submitDate = useDateTimePickerStore((state) => state.submitDate);
+  const dateInvalid = useDateTimePickerStore((state) => state.date.invalid);
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      submitDate();
+    }
+  };
 
   return (
     <Input
-      ref={ref}
       {...props}
-      type='text'
-      placeholder={convertDateToString(new Date(), 'MMM d, yyyy')}
-      validationRules={[{
-        handler: [validationHandler],
-        errorMessage: 'Invalid date'
-      }]}
-      closestFormSubmit
+      type="text"
+      placeholder={dayjs().format('MMM DD, YYYY')}
+      onKeyDown={handleKeyDown}
+      className={clsx({ invalid: dateInvalid })}
+      defaultStyles
     />
   );
-})
-DateInput.displayName = 'DateInput';
-
-export default DateInput;
+}

@@ -1,0 +1,53 @@
+$cell-dimensions: 35px
+
+@mixin wrapper()
+  display: grid
+  grid-template-columns: repeat(7, 1fr)
+  justify-content: center
+  align-items: center
+  margin-block: 15px 3px
+
+@mixin paragraph()
+  display: flex
+  justify-content: center
+  align-items: center
+  width: $cell-dimensions
+  height: $cell-dimensions
+
+@mixin weekDay()
+  color: rgb(var(--secondary-text-rgb))
+  font-size: 14px
+  justify-self: center
+  align-self: center
+
+@mixin monthDay()
+  color: white
+  font-size: 14px
+  border-radius: 3px
+  aspect-ratio: 1
+  transition: .25s all
+  cursor: pointer
+  justify-self: center
+  align-self: center
+  &:hover
+    background-color: rgba(255, 255, 255, .08)
+
+@mixin monthDay--selected()
+  background-color: rgba(var(--today-cell), 0.8)
+  color: white
+
+@mixin monthDay--outmonth()
+  color: rgb(var(--secondary-text-rgb))
+
+.wrapper
+  @include wrapper()
+  & > p
+    @include paragraph()
+  & > .week-day
+    @include weekDay()
+  & > .month-day
+    &:is(.outmonth)
+      @include monthDay--outmonth()
+    @include monthDay()
+    &:is(.selected)
+      @include monthDay--selected()

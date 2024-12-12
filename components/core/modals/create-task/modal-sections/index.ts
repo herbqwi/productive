@@ -1,0 +1,5 @@
+export { default as TaskDescriptionSection } from './task-description-section/task-descriptoin-section.component'
+export { default as DateAndTimePickerSection } from './date-time-section.component'
+export { default as PrioritySection } from './priority-section.component'
+export { default as StatusSection } from './status-section.component'
+export { default as DeadlineTypeSection } from './deadline-type-section.component'

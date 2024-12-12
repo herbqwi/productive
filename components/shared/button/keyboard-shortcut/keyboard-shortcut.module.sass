@@ -1,0 +1,22 @@
+@mixin wrapper()
+  display: flex
+  justify-content: center
+  align-items: center
+
+@mixin shortcut()
+  position: relative
+  display: flex
+  justify-content: center
+  align-items: center
+  color: rgb(var(--modal-label-rgb))
+  background-color: rgba(255, 255, 255, 0.1)
+  border: 1px solid rgba(255, 255, 255, 0.03)
+  min-width: 18.5px
+  aspect-ratio: 1
+  border-radius: 5px
+  padding: 5px
+
+.wrapper
+  @include wrapper()
+  .shortcut
+    @include shortcut()
