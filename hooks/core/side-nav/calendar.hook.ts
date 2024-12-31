@@ -1,5 +1,5 @@
 import { addDays, addMonths, endOfMonth, startOfMonth, startOfWeek, subMonths } from "date-fns";
-import { ICalendarProps } from "@/components/core/nav-menu/calendar/calendar.component";
+import { ICalendarProps } from "@/components/core/side-nav/calendar/calendar.component";
 import { getUserSettings } from "@/util/user.util";
 import { useEffect, useState } from "react";
 

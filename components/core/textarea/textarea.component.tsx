@@ -1,7 +1,7 @@
+import React, { useEffect } from "react";
 import classes from './textarea.module.sass';
 import { useForm } from "@/contexts/form.context";
 import clsx from 'clsx';
-import React, { useEffect, useState } from "react";
 
 type TextAreaProps = React.InputHTMLAttributes<HTMLTextAreaElement> & {
   name?: string;

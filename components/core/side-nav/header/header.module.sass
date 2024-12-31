@@ -1,0 +1,82 @@
+@keyframes color-shift
+  0%
+    color: rgb(120, 120, 120)
+  50%
+    color: rgb(80, 80, 80)
+  100%
+    color: rgb(120, 120, 120)
+
+@mixin wrapper()
+  width: 220px
+
+@mixin logo()
+  position: relative
+  display: flex
+  justify-content: center
+  align-items: center
+  column-gap: 10px
+  font-size: 22px
+  &::before
+    content: ''
+    position: absolute
+    top: -26px
+    left: -26px
+    width: 96px
+    height: 96px
+    border-radius: 50%
+    background-color: #2C241F
+    z-index: calc(var(--z-index-surface) - 1)
+    filter: blur(30px)
+
+@mixin logo-p()
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1)
+  color: var(--white)
+  z-index: calc(var(--z-index-surface) - 1)
+
+@mixin logo-p--closed()
+  opacity: 0
+  transform: translateX(-20px)
+
+@mixin logo-p-dot()
+  color: #F4A261
+
+@mixin toggleButtonWrapper()
+  display: flex
+  justify-content: center
+  align-items: center
+  transition: .2s all
+  padding-block: 5px
+  padding-inline: 2px
+  transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1)
+
+@mixin toggleButtonWrapper--closed()
+  opacity: 0
+  transform: translateX(-20px)
+
+@mixin toggleButton()
+  position: relative
+  color: rgb(80, 80, 80)
+  animation: color-shift 2s infinite linear
+  &:first-child
+    left: 12px
+    margin-left: -12px
+  &:last-child
+    animation-delay: 1s
+
+.wrapper
+  @include wrapper()
+  & > .logo
+    @include logo()
+    & > p
+      @include logo-p()
+      & > span
+        @include logo-p-dot()
+  & > .toggle-btn
+    @include toggleButtonWrapper()
+    & > svg
+      @include toggleButton()
+  &:is(.closed)
+    & > .logo > p
+      @include logo-p--closed()
+    & > .toggle-btn
+      @include toggleButtonWrapper--closed()

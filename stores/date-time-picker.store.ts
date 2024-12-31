@@ -12,9 +12,17 @@ export interface IDateTimePickerInit {
 
 interface IState {
   date: {
-    value: Dayjs;
-    text: string;
-    invalid: boolean;
+    start: {
+      value: Dayjs;
+      text: string;
+      invalid: boolean;
+    };
+    end: {
+      value: Dayjs | null;
+      text: string;
+      enabled: boolean;
+      invalid: boolean;
+    }
   };
   time: {
     value?: Dayjs | null;
@@ -23,20 +31,19 @@ interface IState {
     invalid: boolean;
   }
   viewport: Dayjs;
-  isToday: boolean;
-  isTomorrow: boolean;
   onPickerInputChange?: (props: { date?: Dayjs, time?: Dayjs | null }) => void;
 }
 
 interface IActions {
   updateState: (newState: DeepPartial<IState>) => void;
-  setToday: () => void;
-  setTomorrow: () => void;
   toggleTimeEnabled: () => void;
+  toggleEndDateEnabled: () => void;
   isDateSelected: (date: Dayjs) => boolean;
   isOutOfThisMonth: (date: Dayjs) => boolean;
-  setDate: (date: Dayjs) => void;
-  setDateText: (text: string) => void;
+  setStartingDate: (date: Dayjs) => void;
+  setStartDateText: (text: string) => void;
+  setEndDate: (date: Dayjs) => void;
+  setEndDateText: (text: string) => void;
   submitDate: () => void;
   submitTime: () => void;
   setTimeText: (text: string) => void;
@@ -53,9 +60,17 @@ export type IDateTimePickerStore = IState & IActions;
 const generateDefaults = (): IState => {
   return ({
     date: {
-      value: dayjs(),
-      text: '',
-      invalid: false
+      start: {
+        value: dayjs(),
+        text: '',
+        invalid: false
+      },
+      end: {
+        value: null,
+        text: '',
+        enabled: false,
+        invalid: false
+      }
     },
     time: {
       value: null,
@@ -63,12 +78,9 @@ const generateDefaults = (): IState => {
       enabled: true,
       invalid: false
     },
-    viewport: dayjs(),
-    isToday: true,
-    isTomorrow: false,
+    viewport: dayjs()
   })
 }
-
 
 const useDateTimePickerStore = create<IDateTimePickerStore>((set, get) => ({
   ...generateDefaults(),
@@ -76,41 +88,51 @@ const useDateTimePickerStore = create<IDateTimePickerStore>((set, get) => ({
     set(prev => {
       const updatedState = merge(prev, newState);
 
-      return {
-        ...updatedState,
-        isToday: dayjs().isSame(updatedState.date.value, 'day'),
-        isTomorrow: dayjs().add(1, 'day').isSame(updatedState.date.value, 'day'),
-      }
+      return { ...updatedState }
     })
-  },
-  setToday() {
-    get().setDate(dayjs())
-  },
-  setTomorrow() {
-    get().setDate(dayjs().add(1, 'days'))
   },
   toggleTimeEnabled() {
     const isTimeEnabled = !get().time.enabled;
     get().updateState({ time: { enabled: isTimeEnabled, value: isTimeEnabled ? get().time.value : null, text: isTimeEnabled ? get().time.text : '' } })
     get().triggerUpdate();
   },
+  toggleEndDateEnabled() {
+    const isEndDateEnabled = !get().date.end.enabled;
+    get().updateState({
+      date: {
+        end: {
+          enabled: isEndDateEnabled,
+          value: isEndDateEnabled ? get().date.end.value : null,
+          text: isEndDateEnabled ? get().date.end.text : ''
+        }
+      }
+    })
+    get().triggerUpdate();
+  },
   isDateSelected(date) {
-    return get().date.value.isSame(date, 'day');
+    return get().date.start.value.isSame(date, 'day');
   },
   isOutOfThisMonth(date) {
     return !date.isSame(get().viewport, 'month');
   },
-  setDate(date) {
-    get().updateState({ date: { value: date, text: date.format("MMM DD, YYYY") } })
+  setStartingDate(date) {
+    get().updateState({ date: { start: { value: date, text: date.format("MMM DD, YYYY") } } })
     get().triggerUpdate();
   },
-  setDateText(text) {
-    get().updateState({ date: { text } })
+  setStartDateText(text) {
+    get().updateState({ date: { start: { text } } })
+  },
+  setEndDate(date) {
+    get().updateState({ date: { end: { value: date, text: date.format("MMM DD, YYYY") } } })
+    get().triggerUpdate();
+  },
+  setEndDateText(text) {
+    get().updateState({ date: { end: { text } } })
   },
   submitDate() {
     const state = get();
-    const parsedDateText = parseTextDate(state.date.text);
-    const { value: currentDate } = state.date;
+    const parsedDateText = parseTextDate(state.date.start.text);
+    const { value: currentDate } = state.date.start;
 
     if (parsedDateText) {
       const year = parsedDateText.year() === 2001 ? dayjs().year() : parsedDateText.year();
@@ -122,16 +144,20 @@ const useDateTimePickerStore = create<IDateTimePickerStore>((set, get) => ({
 
       get().updateState({
         date: {
-          value: updatedDate,
-          text: updatedDate.format("MMM DD, YYYY"),
-          invalid: false,
+          start: {
+            value: updatedDate,
+            text: updatedDate.format("MMM DD, YYYY"),
+            invalid: false,
+          }
         },
       });
       get().triggerUpdate();
     } else {
       get().updateState({
         date: {
-          invalid: true,
+          start: {
+            invalid: true,
+          }
         },
       });
     }
@@ -179,9 +205,11 @@ const useDateTimePickerStore = create<IDateTimePickerStore>((set, get) => ({
     const state = get();
     state.updateState({
       date: {
-        value: initialState.date,
-        text: initialState.date.format("MMM DD, YYYY"),
-        invalid: false
+        start: {
+          value: initialState.date,
+          text: initialState.date.format("MMM DD, YYYY"),
+          invalid: false
+        }
       },
       time: {
         value: initialState?.time || null,
@@ -189,8 +217,6 @@ const useDateTimePickerStore = create<IDateTimePickerStore>((set, get) => ({
         enabled: true,
         invalid: false
       },
-      isToday: dayjs().isSame(initialState.date, 'day'),
-      isTomorrow: dayjs().add(1, 'day').isSame(initialState.date, 'day'),
       viewport: initialState.date
     })
   },
@@ -199,7 +225,7 @@ const useDateTimePickerStore = create<IDateTimePickerStore>((set, get) => ({
   },
   triggerUpdate() {
     const state = get();
-    get().onPickerInputChange?.({ date: state.date.value, time: state.time?.value });
+    get().onPickerInputChange?.({ date: state.date.start.value, time: state.time?.value });
   }
 }))
 

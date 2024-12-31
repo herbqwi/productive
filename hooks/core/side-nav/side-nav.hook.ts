@@ -2,7 +2,7 @@ import { useState } from "react";
 
 
 
-export default function useNavMenu() {
+export default function useSideNav() {
   const [isOpen, setOpen] = useState(true);
 
   const toggleOpen = () => setOpen(prev => !prev);

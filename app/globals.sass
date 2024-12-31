@@ -8,9 +8,11 @@
   --secondary-text-rgb: 200, 200, 200
   --white-color: rgb(250, 250, 250)
   --main-btn-rgb: 188, 116, 47
+  --bg-1: rgb(22, 22, 23)
+  --bg-2: rgb(28, 28, 29)
 
   // Nav Menu
-  --nav-menu-rgb: 32, 32, 32
+  --side-nav-rgb: 32, 32, 32
   --logo-rgb: 255, 255, 255
   --slogan-rgb: 140, 140, 140
   --card-hover-rgba: 255, 255, 255, .03
@@ -31,11 +33,17 @@
   // Primary
   --primary-1-rgb: 244, 162, 97
 
-  // Button
-    --button-bg-1: 
+  // Focus
+  --focus-outline-rgb: 180 180 180
+  --focus-outline-transition-duration: .05s
 
   // Z-Index
   --z-index-modal: 999
+  --z-index-main: 2
+  --z-index-surface: 0
+
+  // Others
+  --white: #CFCFCF
 
 *
   box-sizing: border-box
@@ -54,8 +62,14 @@ body
 
 body
   display: flex
-  background-color: rgb(var(--background-rgb))
+  background-color: var(--bg-1)
   font-family: var(--font-nunito)
+  & > main
+    display: flex
+    width: -webkit-fill-available
+    z-index: var(--z-index-main)
+  & *
+    font-family: var(--font-nunito)
 
 a
   color: inherit

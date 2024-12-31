@@ -1,25 +1,27 @@
 import classes from './keyboard-shortcut.module.sass';
-import React, { useEffect } from 'react';
+import React from 'react';
 import clsx from 'clsx';
 
 import { ArrowElbowDownLeft } from '@phosphor-icons/react/dist/ssr';
-import { useMap } from '@/hooks/common/map.hook';
 
-type Button = 'Enter';
+type Button = 'Enter' | 'T' | 'D';
 
 export interface IKeyboardShortcutProps {
   buttons: Button[];
+  size?: 'small' | 'medium';
 }
 
 export default function KeyboardShortcut(props: IKeyboardShortcutProps) {
   const buttonsMapper: Record<Button, React.ReactNode | string> = {
-    'Enter': <ArrowElbowDownLeft size={12} />
+    'Enter': <ArrowElbowDownLeft size={12} />,
+    'T': 'T',
+    'D': 'D'
   }
 
   return (
-    <div className={clsx(classes.wrapper, 'keyboard-shortcut')}>
+    <div className={clsx(classes.wrapper, 'keyboard-shortcut', props.size && classes[props.size])}>
       {props.buttons.map(button => (
-        <div className={classes.shortcut}>
+        <div key={button} className={classes.shortcut}>
           {buttonsMapper[button]}
         </div>
       ))}

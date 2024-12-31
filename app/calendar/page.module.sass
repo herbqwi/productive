@@ -12,8 +12,14 @@
   padding: 12px
 
 @mixin navWrapper()
-  height: 50px
+  display: flex
+  align-items: center
+  column-gap: 5px
+  height: 60px
   width: 100%
+
+@mixin navWrapper-button()
+  padding-inline: 18px
 
 @mixin helperWrapper()
   min-width: 300px
@@ -24,5 +30,7 @@
     @include contentWrapper()
   & >.nav-wrapper
     @include navWrapper()
+    & > button
+      @include navWrapper-button()
 .helper-wrapper
   @include helperWrapper()

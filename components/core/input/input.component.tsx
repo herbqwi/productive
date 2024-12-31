@@ -1,8 +1,8 @@
 import classes from './input.module.sass';
 import React, { useEffect } from "react";
 import clsx from 'clsx';
-import { useForm } from "@/contexts/form.context";
 import { IFormItem } from '@/@types/form.types';
+import { useForm } from "@/contexts/form.context";
 
 type InputProps = React.InputHTMLAttributes<HTMLInputElement> & IFormItem & {
   defaultStyles?: boolean;

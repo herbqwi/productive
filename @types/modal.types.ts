@@ -18,6 +18,7 @@ export enum ModalType {
 type IDateTimePickerModalProps = {
   type: ModalType.DATE_PICKER;
   initialState?: IDateTimePickerInit;
+  location: { top: number, left: number }
 };
 
 type INewTaskModalProps = {

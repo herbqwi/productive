@@ -10,6 +10,11 @@
 
 @mixin button()
   @include button--defaults(1)
+  position: relative
+  display: flex
+  justify-content: center
+  align-items: center
+  column-gap: 10px
   flex: 1
 
 @mixin button--selected()
@@ -19,9 +24,14 @@
   padding-block: 0
   & > svg
     display: flex
+    margin-right: 5px
 
 @mixin timeButton--active()
   background-color: rgba(224, 123, 95, 0.15)
+
+@mixin button-shortcut()
+  position: absolute
+  right: 7px
 
 .wrapper
   @include wrapper()
@@ -33,3 +43,5 @@
         @include timeButton--active()
     &:is(.selected)
       @include button--selected()
+    & > :global(.keyboard-shortcut)
+      @include button-shortcut()

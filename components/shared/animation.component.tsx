@@ -1,20 +1,16 @@
 import { IAnimationProps } from '@/@types/animation.types';
-import { motion } from 'framer-motion';
+import { motion, MotionProps } from 'framer-motion';
 import React, { forwardRef } from 'react';
 
-interface IProps {
+interface IProps extends MotionProps {
   children: React.ReactNode;
   animationProps: IAnimationProps;
 }
 
-const Animation = forwardRef<HTMLDivElement, IProps>((props, ref) => {
+export default function Animation({ children, animationProps, ...divProps }: IProps) {
   return (
-    <motion.div ref={ref} {...props.animationProps}>
-      {props.children}
+    <motion.div {...divProps} {...animationProps}>
+      {children}
     </motion.div>
   );
-});
-
-Animation.displayName = 'Animation';
-
-export default Animation;
+};

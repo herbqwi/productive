@@ -1,11 +1,20 @@
 @mixin button()
+  position: relative
   display: flex
   justify-content: center
   align-items: center
   column-gap: 10px
+  border-radius: 8px
   &:has(:global(.keyboard-shortcut))
     padding: 5px
     padding-left: 10px
+  &:focus-visible
+    @include button--defaults--focus()
+
+@mixin button-info()
+  display: flex
+  column-gap: 10px
+  min-width: max-content
 
 @mixin button-default()
   @include button--defaults()
@@ -13,9 +22,28 @@
 @mixin button-main()
   @include button--defaults-main()
 
+@mixin button-transparent()
+  @include button--defaults-transparent()
+
+@mixin button-outstanding()
+  @include button--defaults-outstanding()
+
+@mixin button-outstanding--selected()
+  @include button--defaults-outstanding--selected()
+
 .button
+  @include button()
+  & > .info
+    @include button-info()
   &:is(.button-default)
     @include button-default()
   &:is(.button-main)
     @include button-main()
-  @include button()
+  &:is(.button-transparent)
+    @include button-transparent()
+  &:is(.button-outstanding)
+    @include button-outstanding()
+    svg
+      @include button--defaults-outstanding-svg()
+    &:is(.selected)
+      @include button-outstanding--selected()

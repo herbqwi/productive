@@ -1,0 +1,16 @@
+
+@mixin wrapper()
+  display: flex
+  flex-direction: column
+  padding: 16px 20px
+  width: 220px
+  box-sizing: content-box
+  transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1)
+
+@mixin wrapper--closed()
+  width: 45px
+
+.wrapper
+  @include wrapper()
+  &:is(.closed)
+    @include wrapper--closed()

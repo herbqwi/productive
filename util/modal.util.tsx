@@ -25,7 +25,14 @@ const ModalUtils = {
         modalStore.open({ ...props, id: uuid(), submitOnEnter: { submit: true, animate: true } });
         break;
       case (ModalType.DATE_PICKER):
-        modalStore.open({ ...props, id: uuid(), submitOnEnter: { submit: true, animate: false } });
+        modalStore.open({
+          ...props,
+          id: uuid(),
+          submitOnEnter: { submit: true, animate: false },
+          animationProps: {
+            initial: undefined
+          }
+        });
 
         if (props.initialState) {
           initDateTimePickerStore(props.initialState)

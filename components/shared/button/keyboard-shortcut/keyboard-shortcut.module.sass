@@ -16,7 +16,15 @@
   border-radius: 5px
   padding: 5px
 
+@mixin shortcut-small()
+  width: 18px
+  height: 18px
+  font-size: 11px
+
 .wrapper
   @include wrapper()
   .shortcut
     @include shortcut()
+  &:is(.small)
+    .shortcut
+      @include shortcut-small()

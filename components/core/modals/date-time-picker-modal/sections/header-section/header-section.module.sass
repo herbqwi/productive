@@ -6,7 +6,7 @@
   color: white
   font-size: 15px
 
-@mixin header-inputForm()
+@mixin header-dateInputWrapper()
   @include input--defaults()
   display: flex
   justify-content: space-between
@@ -14,10 +14,14 @@
   column-gap: 10px
   padding-block: 5px
   padding-inline: 7px
+  transition: var(--focus-outline-transition-duration) border-color
   &:has(:global(.invalid)) > input
     border-color: transparent
+  &:not(:has(:global(.invalid)))
+    &:focus-within
+      border-color: rgb(var(--focus-outline-rgb))
 
-@mixin header-inputForm-input()
+@mixin header-dateInputWrapper-input()
   padding: 0
   margin: 0
   background-color: transparent
@@ -25,10 +29,10 @@
   &:is(.time-input)
     display: none
 
-@mixin header-inputForm--showTime-timeInput()
+@mixin header-dateInputWrapper--showTime-timeInput()
   display: block
 
-@mixin header-inputForm--showTime-border()
+@mixin header-dateInputWrapper--showTime-border()
   display: block
 
 @mixin header-monthInfo()
@@ -56,15 +60,15 @@
 
 .wrapper
   @include wrapper()
-  & > .input-form
-    @include header-inputForm()
+  & > .date-input-wrapper
+    @include header-dateInputWrapper()
     &:is(.show-time)
       & > .time-input
-        @include header-inputForm--showTime-timeInput()
+        @include header-dateInputWrapper--showTime-timeInput()
       & > .border
-        @include header-inputForm--showTime-border()
+        @include header-dateInputWrapper--showTime-border()
     & > input
-      @include header-inputForm-input()
+      @include header-dateInputWrapper-input()
     & > .border
       @include border-block--defaults()
       display: none

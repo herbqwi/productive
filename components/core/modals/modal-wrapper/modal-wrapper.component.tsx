@@ -26,7 +26,7 @@ const DEFAULT_ANIMATION_PROPS: IAnimationProps = {
   initial: { opacity: 0, scale: 0.98 },
   animate: { opacity: 1, scale: 1 },
   exit: { opacity: 0, scale: 0.95 },
-  transition: { duration: 0.2, ease: 'easeInOut' }
+  transition: { duration: 0.15, ease: 'easeInOut' }
 }
 
 const generateModalFunction = (modal: IModalProps) => {
@@ -60,16 +60,15 @@ export default function ModalWrapper() {
 
       if (event.key === 'Enter') {
         const lastModal = modalsList.at(modalsList.length - 1);
-        const lastModalFormElement = document.querySelector(`.${classes['modals-wrapper']} > div:last-child form:not(:has(input:is(:focus))):not(:has(textarea:is(:focus)))`);
-        if (lastModal?.submitOnEnter?.submit) {
+        const lastModalFormElement = document.querySelector(`.${classes['modals-wrapper']} > div:last-child form:not(:has(button:is(:focus))):not(:has(textarea:is(:focus)))`);
+        console.log('lastModalFormElement: ', lastModalFormElement);
+        if (lastModal?.submitOnEnter?.submit && lastModalFormElement) {
           if (lastModal?.submitOnEnter?.animate) {
             setActive(true)
           }
 
-          if (lastModalFormElement) {
-            const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
-            lastModalFormElement.dispatchEvent(submitEvent);
-          }
+          const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
+          lastModalFormElement.dispatchEvent(submitEvent);
         }
       }
     };
@@ -98,7 +97,12 @@ export default function ModalWrapper() {
               <div className={classes['modal-bg']} onMouseDown={closeModal} />
               <Animation
                 key={item.id}
-                animationProps={(active && i === modalsList.length - 1) ? ACTIVE_ANIMATION_PROPS : DEFAULT_ANIMATION_PROPS}
+                animationProps={
+                  (active && i === modalsList.length - 1)
+                    ? ACTIVE_ANIMATION_PROPS
+                    : ({ ...DEFAULT_ANIMATION_PROPS, ...item.animationProps })
+                }
+                style={item.type === ModalType.DATE_PICKER ? item.location : undefined}
               >
                 {generateModalFunction(item)}
               </Animation>

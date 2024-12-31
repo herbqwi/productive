@@ -1,0 +1,87 @@
+@mixin wrapper()
+  display: flex
+  flex-direction: column
+  justify-content: space-between
+  height: 100%
+
+@mixin content()
+  display: flex
+  flex-direction: column
+  row-gap: 10px
+  font-size: 15px
+  padding-block: 40px
+
+@mixin content--bottom()
+  padding-block: 20px
+
+@mixin button()
+  position: relative
+  width: 220px
+  transition: background-color 0.1s, width .5s cubic-bezier(0.25, 1, 0.5, 1)
+  overflow: hidden
+  &:before
+    @include button--tooltip()
+
+@mixin button--tooltip()
+  content: attr(data-title)
+  position: absolute
+  display: flex
+  justify-content: center
+  align-items: center
+  height: 90%
+  padding-inline: 15px
+  background-color: rgb(13, 13, 13)
+  border-bottom: 1px solid rgba(0, 0, 0, .2)
+  box-shadow: 0px 0px 5px 1px rgba(0, 0, 0, .1)
+  top: 5%
+  left: calc(100% + 10px)
+  border-radius: 8px
+  z-index: 1000
+  opacity: 0
+  transition: opacity .15s
+  white-space: nowrap
+
+@mixin button--closed()
+  width: 50px
+  &:hover
+    overflow: visible
+  &:before
+    opacity: 1
+
+@mixin button-info-p()
+  transition: opacity .5s cubic-bezier(0.25, 1, 0.5, 1)
+
+@mixin button-info-p--closed()
+  opacity: 0
+
+@mixin button-number-suffix()
+  background-color: rgba(255, 255, 255, .05)
+  padding: 4px 8px
+  border-radius: 6px
+  font-size: 12px
+  border-bottom: 2px solid rgba(0, 0, 0, .2)
+
+@mixin button-suffix()
+  display: flex
+  border-radius: 6px
+  font-size: 12px
+
+.wrapper
+  @include wrapper()
+  & > div
+    @include content()
+    &:is(:last-child)
+      @include content--bottom()
+    & > button
+      @include button()
+      p
+        @include button-info-p()
+      & > .number-suffix
+        @include button-number-suffix()
+      & > .suffix
+        @include button-suffix()
+  &:is(.closed)
+    & > div > button
+      @include button--closed()
+      p
+        @include button-info-p--closed()

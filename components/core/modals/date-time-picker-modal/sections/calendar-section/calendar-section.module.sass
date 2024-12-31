@@ -7,12 +7,18 @@ $cell-dimensions: 35px
   align-items: center
   margin-block: 15px 3px
 
-@mixin paragraph()
+@mixin button()
   display: flex
   justify-content: center
   align-items: center
   width: $cell-dimensions
   height: $cell-dimensions
+  border: none
+  outline: none
+  background-color: transparent
+  transition: var(--focus-outline-transition-duration) box-shadow
+  &:focus-visible
+    box-shadow: 0 0 0 2px rgb(var(--focus-outline-rgb))
 
 @mixin weekDay()
   color: rgb(var(--secondary-text-rgb))
@@ -41,8 +47,8 @@ $cell-dimensions: 35px
 
 .wrapper
   @include wrapper()
-  & > p
-    @include paragraph()
+  & > button
+    @include button()
   & > .week-day
     @include weekDay()
   & > .month-day

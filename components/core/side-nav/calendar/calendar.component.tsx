@@ -5,9 +5,9 @@ import clsx from 'clsx';
 import { IStateToggle } from '@/@types/global';
 import { format, isAfter, isBefore, isToday } from 'date-fns';
 import { isDatesEqual } from '@/util/global.utils';
-import useCalendar from '@/hooks/core/nav-menu/calendar.hook';
 
 import CalendarHeader from './calendar-header/calendar-header.component';
+import { useCalendar } from '@/hooks/core';
 
 export interface ICalendarProps {
   open: IStateToggle<boolean>;
