@@ -1,0 +1,30 @@
+@mixin button()
+  padding: 4px !important
+
+@mixin checkbox()
+  position: relative
+  width: 15px
+  height: 15px
+  border: 2px solid gray
+  border-radius: 4px
+  transition: background-color .1s
+
+@mixin checkbox--checked()
+  // background-color: #F4A261
+
+@mixin checkbox-checkIcon()
+  position: absolute
+  color: white
+  top: 0px
+  left: 0px
+  transform: translateX(39%) translateY(34%)
+  scale: .9
+
+.button
+  @include button()
+  & > div
+    @include checkbox()
+  & > svg
+    @include checkbox-checkIcon()
+  &:is(.checked) > div
+    @include checkbox--checked()

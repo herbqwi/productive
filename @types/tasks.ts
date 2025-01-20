@@ -1,19 +1,21 @@
+import { Dayjs } from "dayjs";
+
 export interface ITask {
   id?: string;
   title: string;
   description?: string;
   priority: TaskPriority;
   status: TaskStatus;
-  deadlineType: TaskDeadline;
-  intervals?: TaskInterval[];
+  deadline: TaskDeadline;
+  intervals?: TaskInterval;
   isRecurring?: boolean;
   timeGroup?: string;
   labels?: string[];
 }
 
 interface TaskInterval {
-  startDate: Date,
-  endDate: Date
+  startDate: Dayjs,
+  endDate?: Dayjs
 }
 
 export enum TaskPriority {

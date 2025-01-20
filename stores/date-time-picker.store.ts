@@ -62,7 +62,7 @@ const generateDefaults = (): IState => {
     date: {
       start: {
         value: dayjs(),
-        text: '',
+        text: dayjs().format("MMM DD, YYYY"),
         invalid: false
       },
       end: {
@@ -74,7 +74,7 @@ const generateDefaults = (): IState => {
     },
     time: {
       value: null,
-      text: '',
+      text: dayjs().hour(0).minute(0).second(0).format('h:mm A'),
       enabled: true,
       invalid: false
     },

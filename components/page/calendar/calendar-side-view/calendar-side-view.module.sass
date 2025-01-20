@@ -1,0 +1,24 @@
+@mixin wrapper()
+  display: flex
+  flex-direction: column
+  width: 100%
+  height: 100%
+  padding-inline: 20px
+  margin-top: 10px
+  row-gap: 10px
+
+@mixin accordionSummary()
+  display: flex
+  justify-content: space-between
+  align-items: center
+  width: 100%
+
+@mixin accordionSummary-date()
+  font-size: 14px
+
+.wrapper
+  @include wrapper()
+  .accordion-summary
+    @include accordionSummary()
+    & > p:last-child
+      @include accordionSummary-date()

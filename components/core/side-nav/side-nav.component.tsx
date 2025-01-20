@@ -13,9 +13,6 @@ const SideNav = () => {
     <div className={clsx(classes.wrapper, { [classes.closed]: !navMenu.open.value })}>
       <Header {...navMenu} />
       <Content {...navMenu} />
-      {/* <button onClick={() => { ModalUtils.open({ type: ModalType.NEW_TASK }) }}>
-        Create a new task
-      </button> */}
       {/* <Calendar {...navMenu} /> */}
     </div>
   )

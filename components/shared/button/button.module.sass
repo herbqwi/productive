@@ -25,6 +25,9 @@
 @mixin button-transparent()
   @include button--defaults-transparent()
 
+@mixin button-icon()
+  @include button--defaults-icon()
+
 @mixin button-outstanding()
   @include button--defaults-outstanding()
 
@@ -41,6 +44,8 @@
     @include button-main()
   &:is(.button-transparent)
     @include button-transparent()
+  &:is(.button-icon)
+    @include button-icon()
   &:is(.button-outstanding)
     @include button-outstanding()
     svg

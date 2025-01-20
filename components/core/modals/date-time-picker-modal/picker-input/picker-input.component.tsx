@@ -42,7 +42,7 @@ export default function DateTimePicker(props: IProps) {
       >
         <p>
           {value
-            ? `${value?.date ? value.date.format('MMM DD, YYYY') : ''} ${value?.time ? value.time.format('HH:mm') : ''}`
+            ? `${value?.date ? value.date.format('MMM DD, YYYY') : ''} ${value?.time ? value.time.format('hh:mm A') : ''}`
             : 'Select a date'}
         </p>
       </button>

@@ -5,6 +5,7 @@ import { NSCalendar } from '@/@types/calendar.type';
 import useCalendar from '@/hooks/page/calendar/calendar.hook';
 
 import { Button } from '@/components/shared';
+import CalendarSideView from '@/components/page/calendar/calendar-side-view/calendar-side-view.component';
 
 export default function Calendar() {
   const calendar = useCalendar();
@@ -28,8 +29,8 @@ export default function Calendar() {
         <p>test1</p>
       </div>
     </div>
-    <div className={classes['helper-wrapper']}>
-      <p>test2</p>
+    <div className={classes['side-wrapper']}>
+      <CalendarSideView />
     </div>
   </>);
 }

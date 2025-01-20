@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback, Ref
 import clsx from "clsx";
 
 type FormProps = React.HTMLAttributes<HTMLFormElement> & {
-  onSubmit?: () => void;
+  onFinish?: (fields: Map<string, IFormField>) => void;
 };
 
 interface IRegisterField<T = any> {
@@ -11,7 +11,7 @@ interface IRegisterField<T = any> {
   defaultValue?: T;
 }
 
-interface IField<T = any> {
+export interface IFormField<T = any> {
   value: T;
   validationHandler?: (value: T) => boolean;
   ref?: RefObject<HTMLInputElement>;
@@ -50,7 +50,7 @@ export const useForm = () => {
 };
 
 export default function Form(props: FormProps) {
-  const [fields, setFields] = useState<Map<string, IField>>(new Map());
+  const [fields, setFields] = useState<Map<string, IFormField>>(new Map());
   const [subscribers, setSubscribers] = useState<Map<string, Set<Subscriber>>>(new Map());
   const [isValid, setValid] = useState(true);
 
@@ -113,8 +113,8 @@ export default function Form(props: FormProps) {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateAllFields() && props.onSubmit) {
-      props.onSubmit();
+    if (validateAllFields() && props.onFinish) {
+      props.onFinish(fields);
     }
   };
 

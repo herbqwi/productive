@@ -1,0 +1,73 @@
+@mixin wrapper()
+  display: flex
+  flex-direction: column
+  row-gap: 5px
+  color: var(--white)
+  overflow-y: scroll
+  margin-right: -10px
+  padding-block: 10px
+  &::-webkit-scrollbar
+    height: 1rem
+    width: .4rem
+  &::-webkit-scrollbar-thumb
+    --tw-border-opacity: 1
+    background-color: transparent
+    border-color: rgba(255, 255, 255, var(--tw-border-opacity))
+    border-radius: 9999px
+    border-width: 1px
+  &::-webkit-scrollbar-track
+    background-color: transparent
+    border-radius: 9999px
+  &:hover::-webkit-scrollbar-thumb
+    background-color: hsla(0, 0%, 89%, .3)
+
+@mixin group()
+  transition: margin-bottom .3s
+  &:hover .summary svg
+    transform: rotate(180deg)
+
+@mixin group--expanded()
+  margin-bottom: 8px
+
+@mixin summary()
+  display: flex
+  align-items: center
+  column-gap: 4px
+  font-size: 15px
+  font-weight: 600
+  margin-bottom: 4px
+  width: 100%
+  padding: 2px 6px
+
+@mixin summary-icon()
+  transition: .3s all
+
+@mixin summary-icon--expanded()
+  transform: rotate(180deg)
+
+@mixin children()
+  position: relative
+  height: 0
+  overflow-y: hidden
+  transition: height .3s
+  padding-right: 5px
+
+@mixin children--expanded()
+  height: auto
+
+.wrapper
+  @include wrapper()
+  & > .group
+    @include group()
+    & > .summary
+      @include summary()
+      & > svg
+        @include summary-icon()
+    & > .children
+      @include children()
+    &:is(.expanded)
+      @include group--expanded()
+      & > .summary > svg
+        @include summary-icon--expanded()
+      & > .children
+        @include children--expanded()

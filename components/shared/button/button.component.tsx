@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import classes from './button.module.sass'
 import clsx from 'clsx';
 
@@ -8,14 +8,15 @@ type IProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children?: React.ReactElement | React.ReactElement[] | string;
   prefixIcon?: React.ReactNode;
   suffix?: React.ReactNode;
-  variant?: 'none' | 'default' | 'main' | 'outstanding' | 'transparent';
+  variant?: 'none' | 'default' | 'main' | 'outstanding' | 'transparent' | 'icon';
   shortcut?: IKeyboardShortcutProps;
   selected?: boolean;
 }
 
-export default function Button({ children, prefixIcon, suffix, variant, shortcut, selected, ...buttonProps }: IProps) {
+const Button = forwardRef<HTMLButtonElement, IProps>(({ children, prefixIcon, suffix, variant, shortcut, selected, ...buttonProps }, ref) => {
   return (
     <button
+      ref={ref}
       {...buttonProps}
       className={clsx(
         buttonProps.className,
@@ -47,4 +48,8 @@ export default function Button({ children, prefixIcon, suffix, variant, shortcut
       )}
     </button>
   )
-}
+})
+
+Button.displayName = 'Button';
+
+export default Button;

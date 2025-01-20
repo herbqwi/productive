@@ -1,0 +1,48 @@
+@mixin wrapper()
+  display: flex
+  align-items: flex-start
+  column-gap: 5px
+  background-color: rgb(47, 47, 47)
+  border: 1px solid rgba(0, 0, 0, 0.2)
+  border-bottom-width: 2px
+  border-radius: 8px
+  padding: 6px 10px
+  cursor: pointer
+  transition: background-color .2s
+  &:hover
+    background-color: rgb(55, 55, 55)
+
+@mixin content()
+  display: flex
+  flex-direction: column
+  flex: 1
+  width: 50%
+  row-gap: 2px
+  color: white
+
+@mixin content-text()
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  font-size: 14px
+  font-weight: 500
+  line-height: 1.6
+
+@mixin content-button()
+  color: var(--gray-text-1)
+  font-size: 12px
+  font-weight: 400
+  width: fit-content
+  padding-inline: 5px
+  margin-left: -5px
+  &:active
+    background-color: rgba(255, 255, 255, .07)
+
+.wrapper
+  @include wrapper()
+  & > .content
+    @include content()
+    & > p
+      @include content-text()
+    & > button
+      @include content-button()

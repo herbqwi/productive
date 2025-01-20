@@ -1,7 +1,8 @@
 'use client';
 
 import classes from './modal-wrapper.module.sass';
-import React, { useEffect, useLayoutEffect, useRef } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { IAnimationProps } from '@/@types/animation.types';
 import { IModalProps, ModalType } from '@/@types/modal.types';
 import { useModalStore } from "@/stores";
 
@@ -10,7 +11,6 @@ import clsx from 'clsx';
 import DateTimePickerModal from '../date-time-picker-modal/date-time-picker-modal.component';
 import { AnimatePresence } from 'framer-motion'
 import { Animation } from '@/components/shared';
-import { IAnimationProps } from '@/@types/animation.types';
 
 const ACTIVE_ANIMATION_PROPS: IAnimationProps = {
   animate: {
